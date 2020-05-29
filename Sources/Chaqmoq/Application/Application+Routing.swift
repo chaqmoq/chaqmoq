@@ -58,11 +58,11 @@ extension Application {
     }
 
     public func group(
-        _ pathPrefix: String = "/",
-        namePrefix: String? = nil,
+        _ path: String = "/",
+        name: String? = nil,
         handler: @escaping (inout RouteCollection) -> Void
     ) {
-        var routes = RouteCollection(pathPrefix: pathPrefix, namePrefix: namePrefix)
+        var routes = RouteCollection(path: path, name: name)
         handler(&routes)
         router.routes.insert(routes)
     }

@@ -56,4 +56,14 @@ extension Application {
 
         return routes
     }
+
+    public func group(
+        _ pathPrefix: String = "/",
+        namePrefix: String? = nil,
+        handler: @escaping (inout RouteCollection) -> Void
+    ) {
+        var routes = RouteCollection(pathPrefix: pathPrefix, namePrefix: namePrefix)
+        handler(&routes)
+        router.routes.insert(routes)
+    }
 }

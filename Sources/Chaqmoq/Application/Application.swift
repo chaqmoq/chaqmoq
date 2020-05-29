@@ -5,7 +5,7 @@ public final class Application {
     let server: Server
     var router: Router
 
-    public var routes: RouteCollection { router.routeCollection }
+    public var routes: RouteCollection { router.routes }
 
     public init() {
         self.server = Server()

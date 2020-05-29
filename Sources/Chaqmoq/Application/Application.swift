@@ -5,6 +5,8 @@ public final class Application {
     let server: Server
     var router: Router
 
+    public var routes: RouteCollection { router.routeCollection }
+
     public init() {
         self.server = Server()
         self.router = DefaultRouter()

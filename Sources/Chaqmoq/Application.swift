@@ -2,10 +2,8 @@ import HTTP
 import Routing
 
 public final class Application {
-    let server: Server
-    var router: Router
-
-    public var routes: RouteCollection { router.routes }
+    public let server: Server
+    public let router: Router
 
     public init() {
         self.server = Server()

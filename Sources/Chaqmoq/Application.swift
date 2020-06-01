@@ -2,7 +2,7 @@ import HTTP
 import Routing
 
 public final class Application {
-    public let server: Server
+    private let server: Server
     public let router: Router
 
     public init() {

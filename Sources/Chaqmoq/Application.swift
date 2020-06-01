@@ -10,7 +10,7 @@ public final class Application {
         self.router = Router()
 
         server.onReceive = { [weak self] request, eventLoop in
-            if let route = self?.router.resolveRouteBy(method: request.method, uri: request.uri.string ?? "/") {
+            if let uri = request.uri.string, let route = self?.router.resolveRouteBy(method: request.method, uri: uri) {
                 return route.requestHandler(request)
             }
 

@@ -1,15 +1,15 @@
 import HTTP
 import Routing
 
-public final class Application {
-    public var routes: RouteCollection { router.routes }
-
+public final class Application: RouteCollection.Builder {
     let server: Server
     let router: Router
 
     public init() {
         self.server = Server()
         self.router = Router()
+        super.init()
+        self.router.routes = routes
 
         server.onReceive = { [weak self] request, eventLoop in
             guard

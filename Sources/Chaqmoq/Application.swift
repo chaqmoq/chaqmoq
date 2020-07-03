@@ -18,7 +18,7 @@ public final class Application: RouteCollection.Builder {
                     return Response(status: .notFound)
             }
 
-            return route.requestHandler(request)
+            return route.handler(request)
         }
     }
 

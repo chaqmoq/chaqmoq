@@ -34,40 +34,19 @@ extension Application {
                     return Response(status: .notFound)
             }
 
-            if let result = weakSelf.execute(request: request, on: route.middleware) {
-                return result
-            }
-
-            return route.handler(request)
+            return weakSelf.handle(request: request, on: route)
         }
     }
 
-    private func execute(request: Request, on middleware: [Middleware]) -> Any? {
-        var index = 0
-        let count = middleware.count
+    private func handle(request: Request, on route: Route) -> Any {
+        for middleware in route.middleware {
+            let result = middleware.handle(request: request, next: route.handler)
 
-        while index < count {
-            let oneMiddleware = middleware[index]
-            let nextIndex = index + 1
-            var nextMiddleware: Middleware?
-
-            if nextIndex < count {
-                nextMiddleware = middleware[nextIndex]
+            if !(result is Route.Handler) {
+                return result
             }
-
-            if let nextMiddleware = nextMiddleware {
-                let result = oneMiddleware.handle(request: request, next: nextMiddleware)
-
-                if !(result is Middleware) {
-                    return result
-                }
-            } else {
-                return nil
-            }
-
-            index = nextIndex
         }
 
-        return nil
+        return route.handler(request)
     }
 }

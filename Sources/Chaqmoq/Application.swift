@@ -50,15 +50,10 @@ extension Application {
             let oneMiddleware = middleware[index]
             let nextIndex = index + 1
             var nextMiddleware: Middleware?
-
-            if nextIndex < count {
-                nextMiddleware = middleware[nextIndex]
-                index = nextIndex
-            }
-
+            if nextIndex < count { nextMiddleware = middleware[nextIndex] }
             let result = oneMiddleware.handle(request: request, next: nextMiddleware)
             if !(result is Middleware) { return result }
-            index += 1
+            index = nextIndex
         }
 
         return nil

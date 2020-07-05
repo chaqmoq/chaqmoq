@@ -42,7 +42,9 @@ extension Application {
         var currentRequest = request
 
         for middleware in route.middleware {
-            let result = middleware.handle(request: &currentRequest) { _ in }
+            let result = middleware.handle(request: currentRequest) { request in
+                currentRequest = request
+            }
 
             if !(result is Void) {
                 return result

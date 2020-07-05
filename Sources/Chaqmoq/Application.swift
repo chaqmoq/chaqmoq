@@ -39,14 +39,18 @@ extension Application {
     }
 
     private func handle(request: Request, on route: Route) -> Any {
-        for middleware in route.middleware {
-            let result = middleware.handle(request: request, next: route.handler)
+        var routeHandler = route.handler
 
-            if !(result is Route.Handler) {
+        for middleware in route.middleware {
+            let result = middleware.handle(request: request, nextHandler: routeHandler)
+
+            if let result = result as? Route.Handler {
+                routeHandler = result
+            } else {
                 return result
             }
         }
 
-        return route.handler(request)
+        return routeHandler(request)
     }
 }

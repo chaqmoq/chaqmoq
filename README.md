@@ -36,7 +36,7 @@ let package = Package(
 ```swift
 import Chaqmoq
 
-let app = Application()
+let app = Chaqmoq()
 app.get { _ in
     "Hello World"
 }

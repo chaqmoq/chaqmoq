@@ -1,10 +1,12 @@
 import HTTP
 import Routing
 
-public final class Application: RouteCollection.Builder {
+/// Helps to create, start and stop `Chaqmoq` applications.
+public final class Chaqmoq: RouteCollection.Builder {
     let server: Server
     let router: Router
 
+    /// Initializes a new instance of `Chaqmoq` application with the default `Server` and `Router`.
     public init() {
         server = Server()
         router = Router()
@@ -15,16 +17,22 @@ public final class Application: RouteCollection.Builder {
         onReceive()
     }
 
+    /// Starts an application.
+    ///
+    /// - Throws: An error if an application can't be started.
     public func start() throws {
         try server.start()
     }
 
+    /// Stops an application.
+    ///
+    /// - Throws: An error if an application can't be stopped.
     public func stop() throws {
         try server.stop()
     }
 }
 
-extension Application {
+extension Chaqmoq {
     private func onReceive() {
         server.onReceive = { [weak self] request, eventLoop in
             guard

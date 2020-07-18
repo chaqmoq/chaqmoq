@@ -49,11 +49,3 @@ jobs:
       run: swift build -v
     - name: Run tests
       run: swift test --enable-code-coverage --enable-test-discovery --sanitize=thread
-    - name: Generate coverage report
-      run: llvm-cov export -format="lcov" .build/debug/chaqmoqPackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
-    - name: Upload to codecov.io
-      uses: codecov/codecov-action@v1.0.3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        flags: base64,unittests
-        file: coverage.lcov

@@ -50,13 +50,8 @@ extension Chaqmoq {
         var currentRequest = request
 
         for middleware in route.middleware {
-            let result = middleware.handle(request: currentRequest) { request in
-                currentRequest = request
-            }
-
-            if !(result is Void) {
-                return result
-            }
+            let result = middleware.handle(request: currentRequest) { request in currentRequest = request }
+            if !(result is Void) { return result }
         }
 
         return route.handler(currentRequest)

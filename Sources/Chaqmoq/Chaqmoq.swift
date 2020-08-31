@@ -1,3 +1,4 @@
+import Foundation
 import HTTP
 import Routing
 
@@ -29,6 +30,23 @@ public final class Chaqmoq: RouteCollection.Builder {
     /// - Throws: An error if an application can't be stopped.
     public func stop() throws {
         try server.stop()
+    }
+}
+
+extension Chaqmoq {
+    /// Generates a URL for `Route` by name, path's parameters and query strings.
+    ///
+    /// - Parameters:
+    ///   - name: A unique name for `Route`.
+    ///   - parameters: A `Route`'s path parameters. Defaults to `nil`.
+    ///   - query: A dictionary of query strings. Defaults to `nil`.
+    /// - Returns: A generated URL or `nil`.
+    public func generateURLForRoute(
+        named name: String,
+        parameters: Parameters<String, String>? = nil,
+        query: Parameters<String, String>? = nil
+    ) -> URL? {
+        router.generateURLForRoute(named: name, parameters: parameters, query: query)
     }
 }
 

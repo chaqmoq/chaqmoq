@@ -7,6 +7,8 @@ public final class Chaqmoq: RouteCollection.Builder {
     let server: Server
     let router: Router
 
+    public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
+
     /// Initializes a new instance of `Chaqmoq` application with the default `Server` and `Router`.
     public init() {
         server = Server()

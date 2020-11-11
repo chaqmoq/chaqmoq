@@ -21,11 +21,15 @@ import PackageDescription
 let package = Package(
     name: "MyApp",
     dependencies: [
-        .package(url: "https://github.com/chaqmoq/chaqmoq.git", .branch("master"))
+        .package(name: "chaqmoq", url: "https://github.com/chaqmoq/chaqmoq.git", .branch("master"))
     ],
     targets: [
-        .target(name: "MyApp", dependencies: ["Chaqmoq"]),
-        .testTarget(name: "MyAppTests", dependencies: ["MyApp"])
+        .target(name: "MyApp", dependencies: [
+            .product(name: "Chaqmoq", package: "chaqmoq"),
+        ]),
+        .testTarget(name: "MyAppTests", dependencies: [
+            .target(name: "MyApp")
+        ])
     ]
 )
 ```

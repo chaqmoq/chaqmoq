@@ -48,7 +48,7 @@ let app = Chaqmoq()
 app.get { _ in
     "Hello World"
 }
-try app.start()
+try app.run()
 ```
 
 ### Run

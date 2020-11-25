@@ -2,7 +2,7 @@ import Foundation
 import HTTP
 import Routing
 
-/// Helps to create, start and stop `Chaqmoq` applications.
+/// Helps to create, run and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
     let server: Server
     let router: Router
@@ -20,17 +20,17 @@ public final class Chaqmoq: RouteCollection.Builder {
         onReceive()
     }
 
-    /// Starts an application.
+    /// Runs an application.
     ///
-    /// - Throws: An error if an application can't be started.
-    public func start() throws {
+    /// - Throws: An error if an application can't be run.
+    public func run() throws {
         try server.start()
     }
 
-    /// Stops an application.
+    /// Shutdowns an application.
     ///
-    /// - Throws: An error if an application can't be stopped.
-    public func stop() throws {
+    /// - Throws: An error if an application can't be shutdown.
+    public func shutdown() throws {
         try server.stop()
     }
 }

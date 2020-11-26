@@ -48,7 +48,7 @@ let app = Chaqmoq()
 app.get { _ in
     "Hello World"
 }
-try app.run()
+try app.run() // Open http://localhost:8080 in a browser
 ```
 
 ### Run

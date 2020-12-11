@@ -1,11 +1,13 @@
 import Foundation
 import HTTP
 import Routing
+import Yaproq
 
 /// Helps to create, run and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
-    let server: Server
-    let router: Router
+    public let server: Server
+    public let router: Router
+    public let templating: Yaproq
 
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
 
@@ -13,6 +15,7 @@ public final class Chaqmoq: RouteCollection.Builder {
     public init() {
         server = Server()
         router = Router()
+        templating = Yaproq()
 
         super.init()
 

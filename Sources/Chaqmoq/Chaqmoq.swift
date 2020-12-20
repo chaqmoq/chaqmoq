@@ -5,6 +5,7 @@ import Yaproq
 
 /// Helps to create, run and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
+    public let configuration: Configuration
     public let server: Server
     public let router: Router
     public let templating: Yaproq
@@ -12,10 +13,13 @@ public final class Chaqmoq: RouteCollection.Builder {
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
 
     /// Initializes a new instance of `Chaqmoq` application with the default `Server` and `Router`.
-    public init() {
-        server = Server()
+    /// - Parameters:
+    ///   - configuration: An app `Configuration`.
+    public init(configuration: Configuration = .init()) {
+        self.configuration = configuration
+        server = Server(configuration: configuration.server)
         router = Router()
-        templating = Yaproq()
+        templating = Yaproq(configuration: configuration.templating)
 
         super.init()
 
@@ -35,6 +39,18 @@ public final class Chaqmoq: RouteCollection.Builder {
     /// - Throws: An error if an application can't be shutdown.
     public func shutdown() throws {
         try server.stop()
+    }
+}
+
+extension Chaqmoq {
+    public struct Configuration {
+        public var server: Server.Configuration
+        public var templating: Yaproq.Configuration
+
+        public init(server: Server.Configuration = .init(), templating: Yaproq.Configuration = .init()) {
+            self.server = server
+            self.templating = templating
+        }
     }
 }
 

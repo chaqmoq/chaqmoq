@@ -48,15 +48,18 @@ public final class Chaqmoq: RouteCollection.Builder {
 extension Chaqmoq {
     public struct Configuration {
         public let identifier: String
+        public let publicDirectory: String
         public var server: Server.Configuration
         public var templating: Yaproq.Configuration
 
         public init(
             identifier: String = "dev.chaqmoq.chaqmoq",
+            publicDirectory: String = "/",
             server: Server.Configuration = .init(),
             templating: Yaproq.Configuration = .init()
         ) {
             self.identifier = identifier
+            self.publicDirectory = publicDirectory
             self.server = server
             self.templating = templating
         }

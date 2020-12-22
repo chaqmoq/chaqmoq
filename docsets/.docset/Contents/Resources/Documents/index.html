@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+
+    <a title="  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+           Docs
+        </a>
+         (36% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html"> Reference</a>
+      <img class="carat" src="img/carat.png" />
+        Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/Chaqmoq.html">Chaqmoq</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/Chaqmoq/Configuration.html">– Configuration</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            
+            <h1 id='chaqmoq-a-server-side-web-framework-in-swift' class='heading'>Chaqmoq - A server-side web framework in Swift</h1>
+
+<p><a href="https://swift.org/download/#releases"><img src="https://img.shields.io/badge/swift-5.3-brightgreen.svg" alt="Swift"></a> <a href="https://github.com/chaqmoq/chaqmoq/blob/master/LICENSE/"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License"></a> <a href="https://github.com/chaqmoq/chaqmoq/actions"><img src="https://github.com/chaqmoq/chaqmoq/workflows/development/badge.svg" alt="Actions Status"></a> <a href="https://www.codacy.com/gh/chaqmoq/chaqmoq?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chaqmoq/chaqmoq&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/b8dc8bdc13c94054911da004037776f4" alt="Codacy Badge"></a> <a href="https://github.com/chaqmoq/chaqmoq/blob/master/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributing-guide-brightgreen.svg" alt="Contributing"></a> <a href="https://twitter.com/chaqmoqdev"><img src="https://img.shields.io/badge/twitter-chaqmoqdev-brightgreen.svg" alt="Twitter"></a></p>
+<h2 id='installation' class='heading'>Installation</h2>
+<h3 id='swift' class='heading'>Swift</h3>
+
+<p>Download and install <a href="https://swift.org/download">Swift</a></p>
+<h3 id='swift-package' class='heading'>Swift Package</h3>
+<pre class="highlight shell"><code>mkdir MyApp
+<span class="nb">cd </span>MyApp
+swift package init --type executable // Creates an executable app named <span class="s2">"MyApp"</span>
+</code></pre>
+<h3 id='package-swift' class='heading'>Package.swift</h3>
+<pre class="highlight swift"><code><span class="c1">// swift-tools-version:5.3</span>
+
+<span class="kd">import</span> <span class="kt">PackageDescription</span>
+
+<span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
+    <span class="nv">name</span><span class="p">:</span> <span class="s">"MyApp"</span><span class="p">,</span>
+    <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"chaqmoq"</span><span class="p">,</span> <span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/chaqmoq/chaqmoq.git"</span><span class="p">,</span> <span class="o">.</span><span class="nf">branch</span><span class="p">(</span><span class="s">"master"</span><span class="p">))</span>
+    <span class="p">],</span>
+    <span class="nv">targets</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">target</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"MyApp"</span><span class="p">,</span> <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
+            <span class="o">.</span><span class="nf">product</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Chaqmoq"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"chaqmoq"</span><span class="p">),</span>
+        <span class="p">]),</span>
+        <span class="o">.</span><span class="nf">testTarget</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"MyAppTests"</span><span class="p">,</span> <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
+            <span class="o">.</span><span class="nf">target</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"MyApp"</span><span class="p">)</span>
+        <span class="p">])</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</code></pre>
+<h3 id='build' class='heading'>Build</h3>
+<pre class="highlight shell"><code>swift build -c release
+</code></pre>
+<h2 id='usage' class='heading'>Usage</h2>
+<h3 id='main-swift' class='heading'>main.swift</h3>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Chaqmoq</span>
+
+<span class="k">let</span> <span class="nv">app</span> <span class="o">=</span> <span class="kt">Chaqmoq</span><span class="p">()</span>
+<span class="n">app</span><span class="o">.</span><span class="k">get</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="s">"Hello World"</span>
+<span class="p">}</span>
+<span class="k">try</span> <span class="n">app</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span> <span class="c1">// Open http://localhost:8080 in a browser</span>
+</code></pre>
+<h3 id='run' class='heading'>Run</h3>
+<pre class="highlight shell"><code>swift run
+</code></pre>
+<h3 id='tests' class='heading'>Tests</h3>
+<pre class="highlight shell"><code>swift <span class="nb">test</span> --enable-test-discovery --sanitize<span class="o">=</span>thread
+</code></pre>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-12-22)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

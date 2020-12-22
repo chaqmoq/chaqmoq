@@ -1,0 +1,89 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 9,
+      "symbol": "Chaqmoq.configuration",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 10,
+      "symbol": "Chaqmoq.logger",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 11,
+      "symbol": "Chaqmoq.router",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 12,
+      "symbol": "Chaqmoq.server",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 13,
+      "symbol": "Chaqmoq.templating",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 15,
+      "symbol": "Chaqmoq.eventLoopGroup",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 49,
+      "symbol": "Chaqmoq.Configuration",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 50,
+      "symbol": "Chaqmoq.Configuration.identifier",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 51,
+      "symbol": "Chaqmoq.Configuration.publicDirectory",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 52,
+      "symbol": "Chaqmoq.Configuration.server",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 53,
+      "symbol": "Chaqmoq.Configuration.templating",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Chaqmoq.swift",
+      "line": 55,
+      "symbol": "Chaqmoq.Configuration.init(identifier:publicDirectory:server:templating:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/runner/work/chaqmoq/chaqmoq"
+}

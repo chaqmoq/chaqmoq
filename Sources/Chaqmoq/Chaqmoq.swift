@@ -1,24 +1,27 @@
 import Foundation
 import HTTP
+import Logging
 import Routing
 import Yaproq
 
 /// Helps to create, run and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
     public let configuration: Configuration
-    public let server: Server
+    public let logger: Logger
     public let router: Router
+    public let server: Server
     public let templating: Yaproq
 
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
 
-    /// Initializes a new instance of `Chaqmoq` application with the default `Server` and `Router`.
+    /// Initializes a new instance of `Chaqmoq` application with the default `Configuration`.
     /// - Parameters:
     ///   - configuration: An app `Configuration`.
     public init(configuration: Configuration = .init()) {
         self.configuration = configuration
-        server = Server(configuration: configuration.server)
+        logger = Logger(label: configuration.identifier)
         router = Router()
+        server = Server(configuration: configuration.server)
         templating = Yaproq(configuration: configuration.templating)
 
         super.init()
@@ -44,10 +47,16 @@ public final class Chaqmoq: RouteCollection.Builder {
 
 extension Chaqmoq {
     public struct Configuration {
+        public let identifier: String
         public var server: Server.Configuration
         public var templating: Yaproq.Configuration
 
-        public init(server: Server.Configuration = .init(), templating: Yaproq.Configuration = .init()) {
+        public init(
+            identifier: String = "dev.chaqmoq.chaqmoq",
+            server: Server.Configuration = .init(),
+            templating: Yaproq.Configuration = .init()
+        ) {
+            self.identifier = identifier
             self.server = server
             self.templating = templating
         }

@@ -1,28 +1,23 @@
 import Foundation
 import HTTP
-import Logging
 import Routing
-import Yaproq
 
 /// Helps to create, run and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
     public let configuration: Configuration
-    public let logger: Logger
     public let router: Router
     public let server: Server
-    public let templating: Yaproq
 
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
 
     /// Initializes a new instance of `Chaqmoq` application with the default `Configuration`.
+    ///
     /// - Parameters:
     ///   - configuration: An app `Configuration`.
     public init(configuration: Configuration = .init()) {
         self.configuration = configuration
-        logger = Logger(label: configuration.identifier)
         router = Router()
         server = Server(configuration: configuration.server)
-        templating = Yaproq(configuration: configuration.templating)
 
         super.init()
 
@@ -50,18 +45,15 @@ extension Chaqmoq {
         public let identifier: String
         public let publicDirectory: String
         public var server: Server.Configuration
-        public var templating: Yaproq.Configuration
 
         public init(
             identifier: String = "dev.chaqmoq.chaqmoq",
             publicDirectory: String = "/",
-            server: Server.Configuration = .init(),
-            templating: Yaproq.Configuration = .init()
+            server: Server.Configuration = .init()
         ) {
             self.identifier = identifier
             self.publicDirectory = publicDirectory
             self.server = server
-            self.templating = templating
         }
     }
 }
@@ -76,8 +68,8 @@ extension Chaqmoq {
     /// - Returns: A generated URL or `nil`.
     public func generateURLForRoute(
         named name: String,
-        parameters: Parameters<String, String>? = nil,
-        query: Parameters<String, String>? = nil
+        parameters: [String: String]? = nil,
+        query: [String: String]? = nil
     ) -> URL? {
         router.generateURLForRoute(named: name, parameters: parameters, query: query)
     }

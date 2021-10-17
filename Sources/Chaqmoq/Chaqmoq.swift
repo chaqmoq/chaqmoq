@@ -1,14 +1,16 @@
 import Foundation
 import HTTP
+import Resolver
 import Routing
 
 /// Helps to create, run and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
     public let configuration: Configuration
-    public let router: Router
-    public let server: Server
+    public let resolver: Resolver = .main
+    let server: Server
 
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
+    private var middleware: [Middleware] = .init()
 
     /// Initializes a new instance of `Chaqmoq` application with the default `Configuration`.
     ///
@@ -16,15 +18,18 @@ public final class Chaqmoq: RouteCollection.Builder {
     ///   - configuration: An app `Configuration`.
     public init(configuration: Configuration = .init()) {
         self.configuration = configuration
-        router = Router()
         server = Server(configuration: configuration.server)
 
         super.init()
 
+        resolver.register(scoped: .singleton) { _ in Router() }
+        let router: Router = resolver.resolve()!
         router.routes = routes
         onReceive()
     }
+}
 
+extension Chaqmoq {
     /// Runs an application.
     ///
     /// - Throws: An error if an application can't be run.
@@ -41,13 +46,23 @@ public final class Chaqmoq: RouteCollection.Builder {
 }
 
 extension Chaqmoq {
+    public func addMiddleware(_ middleware: Middleware...) {
+        self.middleware = middleware
+    }
+
+    public func addMiddleware(_ middleware: [Middleware]) {
+        self.middleware = middleware
+    }
+}
+
+extension Chaqmoq {
     public struct Configuration {
         public let identifier: String
         public let publicDirectory: String
         public var server: Server.Configuration
 
         public init(
-            identifier: String = "dev.chaqmoq.chaqmoq",
+            identifier: String = "dev.chaqmoq",
             publicDirectory: String = "/",
             server: Server.Configuration = .init()
         ) {
@@ -59,44 +74,24 @@ extension Chaqmoq {
 }
 
 extension Chaqmoq {
-    /// Generates a URL for `Route` by name, path's parameters and query strings.
-    ///
-    /// - Parameters:
-    ///   - name: A unique name for `Route`.
-    ///   - parameters: A `Route`'s path parameters. Defaults to `nil`.
-    ///   - query: A dictionary of query strings. Defaults to `nil`.
-    /// - Returns: A generated URL or `nil`.
-    public func generateURLForRoute(
-        named name: String,
-        parameters: [String: String]? = nil,
-        query: [String: String]? = nil
-    ) -> URL? {
-        router.generateURLForRoute(named: name, parameters: parameters, query: query)
-    }
-}
-
-extension Chaqmoq {
     private func onReceive() {
-        server.onReceive = { [weak self] request, eventLoop in
-            guard
-                let weakSelf = self,
-                let uri = request.uri.string,
-                let route = weakSelf.router.resolveRouteBy(method: request.method, uri: uri) else {
-                    return Response(status: .notFound)
-            }
-
-            return weakSelf.handle(request: request, on: route)
+        server.onReceive = { [self] request, _ in
+            handle(request: request, lastIndex: middleware.count - 1)
         }
     }
 
-    private func handle(request: Request, on route: Route) -> Any {
-        var currentRequest = request
-
-        for middleware in route.middleware {
-            let result = middleware.handle(request: currentRequest) { request in currentRequest = request }
-            if !(result is Void) { return result }
+    private func handle(
+        request: Request,
+        response: Response = .init(),
+        nextIndex index: Int = 0,
+        lastIndex: Int
+    ) -> Response {
+        if index <= lastIndex {
+            return middleware[index].handle(request: request) { [self] request in
+                handle(request: request, response: response, nextIndex: index + 1, lastIndex: lastIndex)
+            }
         }
 
-        return route.handler(currentRequest)
+        return response
     }
 }

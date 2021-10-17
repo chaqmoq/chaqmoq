@@ -9,7 +9,7 @@ public struct CORSMiddleware: Middleware {
     }
 
     public func handle(request: Request, nextHandler: @escaping (Request) -> Response) -> Response {
-        guard request.headers.value(for: .origin) != nil else { return nextHandler(request) }
+        guard request.headers.get(.origin) != nil else { return nextHandler(request) }
         var response = request.isPreflight ? Response(status: .noContent) : nextHandler(request)
         setAllowCredentialsHeader(response: &response)
         setAllowHeadersHeader(request: request, response: &response)
@@ -58,7 +58,7 @@ extension CORSMiddleware.Options {
         case sameAsOrigin
 
         public func value(from request: Request) -> String {
-            guard let origin = request.headers.value(for: .origin) else { return "" }
+            guard let origin = request.headers.get(.origin) else { return "" }
 
             switch self {
             case .all: return "*"
@@ -89,7 +89,7 @@ extension CORSMiddleware {
     private func setAllowHeadersHeader(request: Request, response: inout Response) {
         if let allowedHeaders = options.allowedHeaders {
             response.headers.set(allowedHeaders.joined(separator: ","), for: .accessControlAllowHeaders)
-        } else if let allowedHeaders = request.headers.value(for: .accessControlRequestHeaders) {
+        } else if let allowedHeaders = request.headers.get(.accessControlRequestHeaders) {
             response.headers.set(allowedHeaders, for: .accessControlAllowHeaders)
         }
     }
@@ -122,5 +122,5 @@ extension CORSMiddleware {
 }
 
 private extension Request {
-    var isPreflight: Bool { method == .OPTIONS && headers.value(for: .accessControlRequestMethod) != nil }
+    var isPreflight: Bool { method == .OPTIONS && headers.get(.accessControlRequestMethod) != nil }
 }

@@ -82,41 +82,45 @@ extension CORSMiddleware.Options {
 extension CORSMiddleware {
     private func setAllowCredentialsHeader(response: inout Response) {
         if options.allowCredentials {
-            response.headers.set("true", for: .accessControlAllowCredentials)
+            response.headers.set(.init(name: .accessControlAllowCredentials, value: "true"))
         }
     }
 
     private func setAllowHeadersHeader(request: Request, response: inout Response) {
         if let allowedHeaders = options.allowedHeaders {
-            response.headers.set(allowedHeaders.joined(separator: ","), for: .accessControlAllowHeaders)
+            response.headers.set(
+                .init(name: .accessControlAllowHeaders, value: allowedHeaders.joined(separator: ","))
+            )
         } else if let allowedHeaders = request.headers.get(.accessControlRequestHeaders) {
-            response.headers.set(allowedHeaders, for: .accessControlAllowHeaders)
+            response.headers.set(.init(name: .accessControlAllowHeaders, value: allowedHeaders))
         }
     }
 
     private func setAllowMethodsHeader(response: inout Response) {
         let allowedMethods = options.allowedMethods.map { $0.rawValue }
-        response.headers.set(allowedMethods.joined(separator: ","), for: .accessControlAllowMethods)
+        response.headers.set(.init(name: .accessControlAllowMethods, value: allowedMethods.joined(separator: ",")))
     }
 
     private func setAllowOriginHeader(request: Request, response: inout Response) {
         let value = options.allowedOrigin.value(from: request)
-        response.headers.set(value, for: .accessControlAllowOrigin)
+        response.headers.set(.init(name: .accessControlAllowOrigin, value: value))
 
         if case .sameAsOrigin = options.allowedOrigin, !value.isEmpty {
-            response.headers.set("origin", for: .vary)
+            response.headers.set(.init(name: .vary, value: "origin"))
         }
     }
 
     private func setExposeHeadersHeader(response: inout Response) {
         if let exposedHeaders = options.exposedHeaders {
-            response.headers.set(exposedHeaders.joined(separator: ","), for: .accessControlExposeHeaders)
+            response.headers.set(
+                .init(name: .accessControlExposeHeaders, value: exposedHeaders.joined(separator: ","))
+            )
         }
     }
 
     private func setMaxAgeHeader(response: inout Response) {
         if let maxAge = options.maxAge {
-            response.headers.set(String(maxAge), for: .accessControlMaxAge)
+            response.headers.set(.init(name: .accessControlMaxAge, value: String(maxAge)))
         }
     }
 }

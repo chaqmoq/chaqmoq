@@ -10,7 +10,10 @@ public final class Chaqmoq: RouteCollection.Builder {
     let server: Server
 
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
-    private var middleware: [Middleware] = .init()
+    public var middleware: [Middleware] {
+        get { server.middleware }
+        set { server.middleware = newValue }
+    }
 
     /// Initializes a new instance of `Chaqmoq` application with the default `Configuration`.
     ///
@@ -41,16 +44,6 @@ extension Chaqmoq {
     /// - Throws: An error if an application can't be shutdown.
     public func shutdown() throws {
         try server.stop()
-    }
-}
-
-extension Chaqmoq {
-    public func addMiddleware(_ middleware: Middleware...) {
-        self.middleware = middleware
-    }
-
-    public func addMiddleware(_ middleware: [Middleware]) {
-        self.middleware = middleware
     }
 }
 

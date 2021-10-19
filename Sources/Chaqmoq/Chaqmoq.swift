@@ -25,7 +25,6 @@ public final class Chaqmoq: RouteCollection.Builder {
         resolver.register(scoped: .singleton) { _ in Router() }
         let router: Router = resolver.resolve()!
         router.routes = routes
-        onReceive()
     }
 }
 
@@ -70,28 +69,5 @@ extension Chaqmoq {
             self.publicDirectory = publicDirectory
             self.server = server
         }
-    }
-}
-
-extension Chaqmoq {
-    private func onReceive() {
-        server.onReceive = { [self] request, _ in
-            handle(request: request, lastIndex: middleware.count - 1)
-        }
-    }
-
-    private func handle(
-        request: Request,
-        response: Response = .init(),
-        nextIndex index: Int = 0,
-        lastIndex: Int
-    ) -> Response {
-        if index <= lastIndex {
-            return middleware[index].handle(request: request) { [self] request in
-                handle(request: request, response: response, nextIndex: index + 1, lastIndex: lastIndex)
-            }
-        }
-
-        return response
     }
 }

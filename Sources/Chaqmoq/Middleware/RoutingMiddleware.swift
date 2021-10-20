@@ -8,7 +8,7 @@ public struct RoutingMiddleware: Middleware {
     public func handle(request: Request, nextHandler: @escaping (Request) -> Response) -> Response {
         var request = request
 
-        if let uri = request.uri.string, let route = router.resolveRouteBy(method: request.method, uri: uri) {
+        if let route = router.resolveRoute(for: request) {
             if let parameters = route.parameters {
                 for parameter in parameters {
                     request.uri.parameters[parameter.name] = parameter.value

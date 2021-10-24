@@ -1,3 +1,4 @@
+import AnyCodable
 import HTTP
 import Resolver
 import Routing
@@ -9,9 +10,11 @@ public struct RoutingMiddleware: Middleware {
         var request = request
 
         if let route = router.resolveRoute(for: request) {
+            request.uri.parameters["_route"] = AnyEncodable(route)
+
             if let parameters = route.parameters {
                 for parameter in parameters {
-                    request.uri.parameters[parameter.name] = parameter.value
+                    request.uri.parameters[parameter.name] = AnyEncodable(parameter.value)
                 }
             }
 

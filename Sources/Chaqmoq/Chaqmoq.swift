@@ -6,7 +6,7 @@ import Routing
 /// Helps to create, run and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
     public let configuration: Configuration
-    public let resolver: Resolver = .main
+    public let resolver: Resolver
     let server: Server
 
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
@@ -15,19 +15,19 @@ public final class Chaqmoq: RouteCollection.Builder {
         set { server.middleware = newValue }
     }
 
-    /// Initializes a new instance of `Chaqmoq` application with the default `Configuration`.
+    /// Initializes a new instance of `Chaqmoq` application.
     ///
     /// - Parameters:
     ///   - configuration: An app `Configuration`.
-    public init(configuration: Configuration = .init()) {
+    ///   - resolver: An instance of dependency injection container. Defaults to `.main`.
+    public init(configuration: Configuration = .init(), resolver: Resolver = .main) {
         self.configuration = configuration
+        self.resolver = resolver
         server = Server(configuration: configuration.server)
 
         super.init()
 
-        resolver.register(scoped: .singleton) { _ in Router() }
-        let router: Router = resolver.resolve()!
-        router.routes = routes
+        resolver.register(scoped: .singleton) { [self] _ in Router(routes: routes) }
     }
 }
 

@@ -3,8 +3,9 @@ import HTTP
 import Resolver
 import Routing
 
-/// Helps to create, run and shutdown `Chaqmoq` applications.
+/// Helps to create, run, and shutdown `Chaqmoq` applications.
 public final class Chaqmoq: RouteCollection.Builder {
+    public let environment: Environment
     public let configuration: Configuration
     public let resolver: Resolver
     let server: Server
@@ -18,9 +19,15 @@ public final class Chaqmoq: RouteCollection.Builder {
     /// Initializes a new instance of `Chaqmoq` application.
     ///
     /// - Parameters:
-    ///   - configuration: An app `Configuration`.
+    ///   - configuration: An application's `Configuration`.
+    ///   - environment: An application's `Environment`. Defaults to `.development`.
     ///   - resolver: An instance of dependency injection container. Defaults to `.main`.
-    public init(configuration: Configuration = .init(), resolver: Resolver = .main) {
+    public init(
+        configuration: Configuration = .init(),
+        environment: Environment = .init(),
+        resolver: Resolver = .main
+    ) {
+        self.environment = environment
         self.configuration = configuration
         self.resolver = resolver
         server = Server(configuration: configuration.server)
@@ -39,9 +46,9 @@ extension Chaqmoq {
         try server.start()
     }
 
-    /// Shutdowns an application.
+    /// Shuts down an application.
     ///
-    /// - Throws: An error if an application can't be shutdown.
+    /// - Throws: An error if an application can't be shut down.
     public func shutdown() throws {
         try server.stop()
     }

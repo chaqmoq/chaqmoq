@@ -5,6 +5,8 @@ import Routing
 public struct RoutingMiddleware: Middleware {
     @Injected public private(set) var router: Router
 
+    public init() {}
+
     public func handle(request: Request, nextHandler: @escaping (Request) -> Response) -> Response {
         if let route = router.resolveRoute(for: request) {
             var request = request

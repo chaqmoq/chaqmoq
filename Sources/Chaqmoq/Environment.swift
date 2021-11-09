@@ -4,16 +4,7 @@ public struct Environment {
     public let name: String
 
     public init(name: String = Environment.get("CHAQMOQ_ENV") ?? "") {
-        switch name {
-        case "production":
-            self = .production
-        case "development", "":
-            self = .development
-        case "testing":
-            self = .testing
-        default:
-            self.name = name
-        }
+        self.name = name.isEmpty ? Environment.development.name : name
     }
 
     public static func get(_ key: String) -> String? {

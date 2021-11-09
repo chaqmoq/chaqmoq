@@ -34,8 +34,8 @@ public final class Chaqmoq: RouteCollection.Builder {
 
         super.init()
 
-        middleware = [RoutingMiddleware()]
         resolver.register(scoped: .singleton) { [self] _ in Router(routes: routes) }
+        middleware = [RoutingMiddleware()]
     }
 }
 

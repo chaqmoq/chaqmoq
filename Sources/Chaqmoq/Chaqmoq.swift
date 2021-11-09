@@ -27,13 +27,14 @@ public final class Chaqmoq: RouteCollection.Builder {
         environment: Environment = .init(),
         resolver: Resolver = .main
     ) {
-        self.environment = environment
         self.configuration = configuration
+        self.environment = environment
         self.resolver = resolver
         server = Server(configuration: configuration.server)
 
         super.init()
 
+        middleware = [RoutingMiddleware()]
         resolver.register(scoped: .singleton) { [self] _ in Router(routes: routes) }
     }
 }

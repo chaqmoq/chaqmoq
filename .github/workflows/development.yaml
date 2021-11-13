@@ -19,7 +19,7 @@ jobs:
       uses: sukhrobkhakimov/publish-jazzy-docs@v1
       with:
         personal_access_token: ${{ secrets.ACCESS_TOKEN }}
-        args: "--theme fullwidth"
+        args: "--theme fullwidth --output chaqmoq"
   ubuntu-bionic:
     runs-on: ubuntu-latest
     container:

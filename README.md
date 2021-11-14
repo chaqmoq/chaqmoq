@@ -1,5 +1,5 @@
 <div align="center">
-    <p><img src="https://user-images.githubusercontent.com/1179760/141675117-c2e38c14-1869-4134-ab61-b3793bb6d3d6.png" /></p>
+    <p><a href="https://chaqmoq.dev"><img src="https://chaqmoq.dev/logo.png" /></a></p>
     <p>
         <a href="https://swift.org/download/#releases"><img src="https://img.shields.io/badge/swift-5.5+-brightgreen.svg" /></a>
         <a href="https://github.com/chaqmoq/chaqmoq/blob/master/LICENSE/"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" /></a>
@@ -11,4 +11,4 @@
         <a href="https://twitter.com/chaqmoqdev"><img src="https://img.shields.io/badge/twitter-chaqmoqdev-brightgreen.svg" /></a>
     </p>
 </div>
-<a href="https://chaqmoq.dev">Chaqmoq</a> is a non-blocking server-side web framework consisting of a set of reusable standalone components and powered by fast, secure, and powerful <a href="https://swift.org">Swift</a> language and <a href="https://github.com/apple/swift-nio">SwiftNIO</a>. Read the <a href="https://docs.chaqmoq.dev">Documentation</a> for more info.
+<a href="https://chaqmoq.dev">Chaqmoq</a> is a non-blocking server-side web framework consisting of a set of reusable standalone components and powered by fast, secure, and powerful <a href="https://swift.org">Swift</a> language and <a href="https://github.com/apple/swift-nio">SwiftNIO</a>. Read the <a href="https://docs.chaqmoq.dev">documentation</a> for more info.

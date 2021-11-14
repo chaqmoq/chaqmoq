@@ -1,56 +1,14 @@
-# Chaqmoq - A server-side web framework in Swift
-[![Swift](https://img.shields.io/badge/swift-5.3-brightgreen.svg)](https://swift.org/download/#releases) [![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/chaqmoq/chaqmoq/blob/master/LICENSE/) [![Actions Status](https://github.com/chaqmoq/chaqmoq/workflows/development/badge.svg)](https://github.com/chaqmoq/chaqmoq/actions) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b8dc8bdc13c94054911da004037776f4)](https://www.codacy.com/gh/chaqmoq/chaqmoq?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chaqmoq/chaqmoq&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/chaqmoq/chaqmoq/branch/master/graph/badge.svg?token=9462JYGK4B)](https://codecov.io/gh/chaqmoq/chaqmoq) [![Documentation](https://github.com/chaqmoq/chaqmoq/blob/gh-pages/badge.svg)](https://chaqmoq.dev/chaqmoq/) [![Contributing](https://img.shields.io/badge/contributing-guide-brightgreen.svg)](https://github.com/chaqmoq/chaqmoq/blob/master/CONTRIBUTING.md) [![Twitter](https://img.shields.io/badge/twitter-chaqmoqdev-brightgreen.svg)](https://twitter.com/chaqmoqdev)
-
-## Installation
-### Swift
-Download and install [Swift](https://swift.org/download)
-
-### Swift Package
-```shell
-mkdir MyApp
-cd MyApp
-swift package init --type executable // Creates an executable app named "MyApp"
-```
-
-#### Package.swift
-```swift
-// swift-tools-version:5.3
-
-import PackageDescription
-
-let package = Package(
-    name: "MyApp",
-    dependencies: [
-        .package(name: "chaqmoq", url: "https://github.com/chaqmoq/chaqmoq.git", .branch("master"))
-    ],
-    targets: [
-        .target(name: "MyApp", dependencies: [
-            .product(name: "Chaqmoq", package: "chaqmoq"),
-        ]),
-        .testTarget(name: "MyAppTests", dependencies: [
-            .target(name: "MyApp")
-        ])
-    ]
-)
-```
-
-### Build
-```shell
-swift build -c release
-```
-
-## Usage
-```swift
-import Chaqmoq
-
-let app = Chaqmoq()
-app.get { _ in
-    "Hello World"
-}
-try app.run() // Open http://localhost:8080 in a browser
-```
-
-## Tests
-```shell
-swift test --enable-test-discovery --sanitize=thread
-```
+<div align="center">
+    <p><img src="https://user-images.githubusercontent.com/1179760/141675117-c2e38c14-1869-4134-ab61-b3793bb6d3d6.png" /></p>
+    <p>
+        <a href="https://swift.org/download/#releases"><img src="https://img.shields.io/badge/swift-5.5+-brightgreen.svg" /></a>
+        <a href="https://github.com/chaqmoq/chaqmoq/blob/master/LICENSE/"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" /></a>
+        <a href="https://github.com/chaqmoq/chaqmoq/actions"><img src="https://github.com/chaqmoq/chaqmoq/workflows/ci/badge.svg" /></a>
+        <a href="https://app.codacy.com/project/badge/Grade/b8dc8bdc13c94054911da004037776f4"><img src="https://www.codacy.com/gh/chaqmoq/chaqmoq?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chaqmoq/chaqmoq&amp;utm_campaign=Badge_Grade" /></a>
+        <a href="https://codecov.io/gh/chaqmoq/chaqmoq"><img src="https://codecov.io/gh/chaqmoq/chaqmoq/branch/master/graph/badge.svg?token=9462JYGK4B" /></a>
+        <a href="https://chaqmoq.dev/chaqmoq/"><img src="https://github.com/chaqmoq/chaqmoq/blob/gh-pages/badge.svg" /></a>
+        <a href="https://github.com/chaqmoq/chaqmoq/blob/master/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributing-guide-brightgreen.svg" /></a>
+        <a href="https://twitter.com/chaqmoqdev"><img src="https://img.shields.io/badge/twitter-chaqmoqdev-brightgreen.svg" /></a>
+    </p>
+</div>
+<a href="https://chaqmoq.dev">Chaqmoq</a> is a non-blocking server-side web framework consisting of a set of reusable standalone components and powered by fast, secure, and powerful <a href="https://swift.org">Swift</a> language and <a href="https://github.com/apple/swift-nio">SwiftNIO</a>. Read the <a href="https://docs.chaqmoq.dev">Documentation</a> for more info.

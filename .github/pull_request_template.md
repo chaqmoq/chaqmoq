@@ -19,4 +19,4 @@ Add `x` to mark that you have done it or leave it empty but provide a reason bel
 ## Actions Status
 Copy your branch name and replace 2 `your-branch-name`s in the link with yours.
 
-[![Actions Status](https://github.com/chaqmoq/chaqmoq/actions/workflows/development.yaml/badge.svg?branch=your-branch-name)](https://github.com/chaqmoq/chaqmoq/actions/workflows/development.yaml?branch=your-branch-name)
+[![Actions Status](https://github.com/chaqmoq/chaqmoq/actions/workflows/ci.yaml/badge.svg?branch=your-branch-name)](https://github.com/chaqmoq/chaqmoq/actions/workflows/ci.yaml?branch=your-branch-name)

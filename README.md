@@ -10,5 +10,5 @@
         <a href="https://github.com/chaqmoq/chaqmoq/blob/master/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributing-guide-brightgreen.svg" /></a>
         <a href="https://twitter.com/chaqmoqdev"><img src="https://img.shields.io/badge/twitter-chaqmoqdev-brightgreen.svg" /></a>
     </p>
-    <a href="https://chaqmoq.dev">Chaqmoq</a> is a non-blocking server-side web framework consisting of a set of reusable standalone packages and powered by fast, secure, and powerful <a href="https://swift.org">Swift</a> language and <a href="https://github.com/apple/swift-nio">SwiftNIO</a>. Read the <a href="https://docs.chaqmoq.dev">documentation</a> for more info.
+    <p><a href="https://chaqmoq.dev">Chaqmoq</a> is a non-blocking server-side web framework consisting of a set of reusable standalone packages and powered by fast, secure, and powerful <a href="https://swift.org">Swift</a> language and <a href="https://github.com/apple/swift-nio">SwiftNIO</a>. Read the <a href="https://docs.chaqmoq.dev">documentation</a> for more info.</p>
 </div>

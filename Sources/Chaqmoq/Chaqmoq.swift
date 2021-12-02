@@ -65,6 +65,7 @@ extension Chaqmoq {
 }
 
 extension Chaqmoq {
+    /// Manages an application's `Configuration`.
     public struct Configuration {
         /// A unique identifier for an application. For example, a reverse domain name like `dev.chaqmoq`.
         public let identifier: String

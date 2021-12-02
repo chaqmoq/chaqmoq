@@ -1,6 +1,6 @@
 import Foundation
 
-/// Manages an application `Environment` such as `.production`, `.development`, and `.testing`. Enables to create a custom `Environment`
+/// Manages an application's `Environment` such as `.production`, `.development`, and `.testing`. Enables to create a custom `Environment`
 /// and provides access to `Environment` variables.
 public struct Environment {
     /// The name of an `Environment`.

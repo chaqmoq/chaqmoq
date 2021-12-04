@@ -20,4 +20,11 @@ final class EnvironmentTests: XCTestCase {
         // Assert
         XCTAssertEqual(environment.name, name)
     }
+
+    func testEnvironments() {
+        // Assert
+        XCTAssertEqual(Environment.production.name, "production")
+        XCTAssertEqual(Environment.development.name, "development")
+        XCTAssertEqual(Environment.testing.name, "testing")
+    }
 }

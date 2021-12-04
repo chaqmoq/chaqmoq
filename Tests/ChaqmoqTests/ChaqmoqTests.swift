@@ -34,3 +34,24 @@ final class ChaqmoqTests: XCTestCase {
         XCTAssertTrue(app.resolver === resolver)
     }
 }
+
+final class ChaqmoqConfigurationTests: XCTestCase {
+    func testInit() {
+        // Arrange
+        let identifier = "com.mydomain"
+        let publicDirectory = "/Public"
+        let serverConfiguration = Server.Configuration()
+
+        // Act
+        let configuration = Chaqmoq.Configuration(
+            identifier: identifier,
+            publicDirectory: publicDirectory,
+            server: serverConfiguration
+        )
+
+        // Assert
+        XCTAssertEqual(configuration.identifier, identifier)
+        XCTAssertEqual(configuration.publicDirectory, publicDirectory)
+        XCTAssertEqual(configuration.server, serverConfiguration)
+    }
+}

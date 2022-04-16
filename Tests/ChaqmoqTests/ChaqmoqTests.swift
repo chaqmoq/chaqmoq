@@ -36,10 +36,11 @@ final class ChaqmoqTests: XCTestCase {
 }
 
 final class ChaqmoqConfigurationTests: XCTestCase {
+    let identifier = "com.mydomain"
+    let publicDirectory = "/Public"
+
     func testInit() {
         // Arrange
-        let identifier = "com.mydomain"
-        let publicDirectory = "/Public"
         let serverConfiguration = Server.Configuration()
 
         // Act

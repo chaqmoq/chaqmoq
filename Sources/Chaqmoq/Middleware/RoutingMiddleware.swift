@@ -26,7 +26,10 @@ public struct RoutingMiddleware: Middleware {
 
     private func handle(request: Request, route: Route) -> Response {
         let result = route.handler(request)
-        if let response = result as? Response { return response }
+
+        if let response = result as? Response {
+            return response
+        }
 
         return Response("\(result)")
     }
@@ -38,10 +41,16 @@ public struct RoutingMiddleware: Middleware {
         nextIndex index: Int = 0
     ) -> Response {
         let lastIndex = middleware.count - 1
-        if index > lastIndex { return handle(request: request, route: route) }
+
+        if index > lastIndex {
+            return handle(request: request, route: route)
+        }
 
         return middleware[index].handle(request: request) { [self] request in
-            if index == lastIndex { return handle(request: request, route: route) }
+            if index == lastIndex {
+                return handle(request: request, route: route)
+            }
+
             return handle(request: request, route: route, middleware: middleware, nextIndex: index + 1)
         }
     }

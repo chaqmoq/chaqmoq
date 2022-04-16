@@ -1,7 +1,7 @@
 <div align="center">
     <h1><a href="https://chaqmoq.dev"><img src="https://chaqmoq.dev/logo.png" /></a></h1>
     <p>
-        <a href="https://swift.org/download/#releases"><img src="https://img.shields.io/badge/swift-5.3+-brightgreen.svg" /></a>
+        <a href="https://swift.org/download/#releases"><img src="https://img.shields.io/badge/swift-5.5+-brightgreen.svg" /></a>
         <a href="https://github.com/chaqmoq/chaqmoq/blob/master/LICENSE/"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" /></a>
         <a href="https://github.com/chaqmoq/chaqmoq/actions"><img src="https://github.com/chaqmoq/chaqmoq/workflows/ci/badge.svg" /></a>
         <a href="https://www.codacy.com/gh/chaqmoq/chaqmoq/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chaqmoq/chaqmoq&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/b8dc8bdc13c94054911da004037776f4" /></a>

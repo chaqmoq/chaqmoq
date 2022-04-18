@@ -13,19 +13,19 @@ public struct RoutingMiddleware: Middleware {
     public init() {}
 
     /// See `Middleware`.
-    public func handle(request: Request, nextHandler: @escaping (Request) -> Response) -> Response {
+    public func handle(request: Request, nextHandler: @escaping (Request) async -> Response) async -> Response {
         if let route = router.resolveRoute(for: request) {
             var request = request
             request.setAttribute("_route", value: route)
 
-            return handle(request: request, route: route, middleware: route.middleware)
+            return await handle(request: request, route: route, middleware: route.middleware)
         }
 
         return Response(status: .notFound)
     }
 
-    private func handle(request: Request, route: Route) -> Response {
-        let result = route.handler(request)
+    private func handle(request: Request, route: Route) async -> Response {
+        let result = await route.handler(request)
 
         if let response = result as? Response {
             return response
@@ -39,19 +39,19 @@ public struct RoutingMiddleware: Middleware {
         route: Route,
         middleware: [Middleware],
         nextIndex index: Int = 0
-    ) -> Response {
+    ) async -> Response {
         let lastIndex = middleware.count - 1
 
         if index > lastIndex {
-            return handle(request: request, route: route)
+            return await handle(request: request, route: route)
         }
 
-        return middleware[index].handle(request: request) { [self] request in
+        return await middleware[index].handle(request: request) { [self] request in
             if index == lastIndex {
-                return handle(request: request, route: route)
+                return await handle(request: request, route: route)
             }
 
-            return handle(request: request, route: route, middleware: middleware, nextIndex: index + 1)
+            return await handle(request: request, route: route, middleware: middleware, nextIndex: index + 1)
         }
     }
 }

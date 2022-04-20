@@ -13,12 +13,15 @@ public struct RoutingMiddleware: Middleware {
     public init() {}
 
     /// See `Middleware`.
-    public func handle(request: Request, nextHandler: @escaping (Request) async -> Response) async -> Response {
+    public func handle(
+        request: Request,
+        nextHandler: @escaping (Request) async throws -> Response
+    ) async throws -> Response {
         if let route = router.resolveRoute(for: request) {
             var request = request
             request.setAttribute("_route", value: route)
 
-            return await handle(request: request, route: route, middleware: route.middleware)
+            return try await handle(request: request, route: route, middleware: route.middleware)
         }
 
         return Response(status: .notFound)
@@ -39,19 +42,19 @@ public struct RoutingMiddleware: Middleware {
         route: Route,
         middleware: [Middleware],
         nextIndex index: Int = 0
-    ) async -> Response {
+    ) async throws -> Response {
         let lastIndex = middleware.count - 1
 
         if index > lastIndex {
             return await handle(request: request, route: route)
         }
 
-        return await middleware[index].handle(request: request) { [self] request in
+        return try await middleware[index].handle(request: request) { [self] request in
             if index == lastIndex {
                 return await handle(request: request, route: route)
             }
 
-            return await handle(request: request, route: route, middleware: middleware, nextIndex: index + 1)
+            return try await handle(request: request, route: route, middleware: middleware, nextIndex: index + 1)
         }
     }
 }

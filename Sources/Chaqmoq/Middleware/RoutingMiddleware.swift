@@ -18,9 +18,17 @@ public struct RoutingMiddleware: Middleware {
         nextHandler: @escaping (Request) async throws -> Response
     ) async throws -> Response {
         if let route = router.resolveRoute(for: request) {
+            var routeParameters = [String: String]()
+
+            if let parameters = route.parameters {
+                for parameter in parameters {
+                    routeParameters[parameter.name] = parameter.value
+                }
+            }
+
             var request = request
             request.setAttribute("_route", value: route)
-            request.setAttribute("_route_parameters", value: route.parameters)
+            request.setAttribute("_route_parameters", value: routeParameters)
 
             return try await handle(request: request, route: route, middleware: route.middleware)
         }

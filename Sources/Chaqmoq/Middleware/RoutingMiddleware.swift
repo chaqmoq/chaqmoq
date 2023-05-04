@@ -20,6 +20,7 @@ public struct RoutingMiddleware: Middleware {
         if let route = router.resolveRoute(for: request) {
             var request = request
             request.setAttribute("_route", value: route)
+            request.setAttribute("_route_parameters", value: route.parameters)
 
             return try await handle(request: request, route: route, middleware: route.middleware)
         }

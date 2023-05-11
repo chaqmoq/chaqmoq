@@ -9,44 +9,32 @@ jobs:
   macos:
     runs-on: macos-12
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test --enable-code-coverage --sanitize=thread
-    - name: Generate documentation
-      uses: sukhrobkhakimov/publish-jazzy-docs@v1
-      with:
-        personal_access_token: ${{ secrets.ACCESS_TOKEN }}
-        args: "--module Chaqmoq --theme fullwidth --root-url https://chaqmoq.dev/chaqmoq/ --source-host github --source-host-url https://github.com/chaqmoq/chaqmoq"
-  ubuntu-bionic:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test --enable-code-coverage --sanitize=thread
+      - name: Generate documentation
+        uses: sukhrobkhakimov/publish-jazzy-docs@v1
+        with:
+          personal_access_token: ${{ secrets.ACCESS_TOKEN }}
+          args: "--module Chaqmoq --theme fullwidth --root-url https://chaqmoq.dev/chaqmoq --source-host github --source-host-url https://github.com/chaqmoq/chaqmoq"
+  ubuntu:
     runs-on: ubuntu-latest
-    container:
-      image: swift:5.5-bionic
+    container: swift:5.8-jammy
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test --enable-code-coverage --enable-test-discovery --sanitize=thread
-    - name: Generate coverage report
-      run: llvm-cov export -format="lcov" .build/debug/chaqmoqPackageTests.xctest -instr-profile=.build/debug/codecov/default.profdata -ignore-filename-regex=".build|Tests" > coverage.lcov
-    - name: Upload to codecov.io
-      uses: codecov/codecov-action@v1.0.3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        flags: base64,unittests
-        file: coverage.lcov
-  ubuntu-xenial:
-    runs-on: ubuntu-latest
-    container:
-      image: swift:5.5-xenial
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test --enable-code-coverage --enable-test-discovery --sanitize=thread
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test --enable-code-coverage --enable-test-discovery --sanitize=thread
+      - name: Generate coverage report
+        run: llvm-cov export -format="lcov" .build/debug/chaqmoqPackageTests.xctest -instr-profile=.build/debug/codecov/default.profdata -ignore-filename-regex=".build|Tests" > coverage.lcov
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: base64,unittests
+          file: coverage.lcov

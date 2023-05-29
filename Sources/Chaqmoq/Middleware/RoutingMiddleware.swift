@@ -27,8 +27,8 @@ public struct RoutingMiddleware: Middleware {
         return Response(status: .notFound)
     }
 
-    private func handle(request: Request, route: Route) async -> Response {
-        let result = await route.handler(request)
+    private func handle(request: Request, route: Route) async throws -> Response {
+        let result = try await route.handler(request)
 
         if let response = result as? Response {
             return response
@@ -46,12 +46,12 @@ public struct RoutingMiddleware: Middleware {
         let lastIndex = middleware.count - 1
 
         if index > lastIndex {
-            return await handle(request: request, route: route)
+            return try await handle(request: request, route: route)
         }
 
         return try await middleware[index].handle(request: request) { [self] request in
             if index == lastIndex {
-                return await handle(request: request, route: route)
+                return try await handle(request: request, route: route)
             }
 
             return try await handle(request: request, route: route, middleware: middleware, nextIndex: index + 1)

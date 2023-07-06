@@ -17,7 +17,7 @@ public struct RoutingMiddleware: Middleware {
         request: Request,
         nextHandler: @escaping (Request) async throws -> Response
     ) async throws -> Response {
-        if let route = router.resolveRoute(for: request) {
+        if let route = router.resolve(request: request) {
             var request = request
             request.setAttribute("_route", value: route)
 

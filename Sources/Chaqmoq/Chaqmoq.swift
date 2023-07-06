@@ -43,7 +43,7 @@ public final class Chaqmoq: RouteCollection.Builder {
 
         super.init()
 
-        resolver.register(Router.self, scoped: .singleton) { [unowned self] _ in TrieRouter(routes: routes) }
+        resolver.register(Router.self, scoped: .singleton) { [self] _ in TrieRouter(routes: routes) }
         middleware = [RoutingMiddleware()]
     }
 }

@@ -4,7 +4,7 @@ import Resolver
 import Routing
 
 /// Helps to create, run, and shut down `Chaqmoq` applications.
-public final class Chaqmoq: RouteCollection.Builder {
+public final class Chaqmoq: TrieRouter {
     /// The current application's `Configuration`.
     public let configuration: Configuration
 
@@ -43,7 +43,7 @@ public final class Chaqmoq: RouteCollection.Builder {
 
         super.init()
 
-        resolver.register(Router.self, scoped: .singleton) { [self] _ in TrieRouter(routes: routes) }
+        resolver.register(Router.self, scoped: .singleton) { [unowned self] _ in self }
         middleware = [RoutingMiddleware()]
     }
 }

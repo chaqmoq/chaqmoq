@@ -18,43 +18,23 @@ public struct RoutingMiddleware: Middleware {
         nextHandler: @escaping (Request) async throws -> Response
     ) async throws -> Response {
         if let route = router.resolve(request: request) {
-            var request = request
-            request.setAttribute("_route", value: route)
-
-            return try await handle(request: request, route: route, middleware: route.middleware)
-        }
-
-        return Response(status: .notFound)
-    }
-
-    private func handle(request: Request, route: Route) async throws -> Response {
-        let result = try await route.handler(request)
-
-        if let response = result as? Response {
-            return response
-        }
-
-        return Response("\(result)")
-    }
-
-    private func handle(
-        request: Request,
-        route: Route,
-        middleware: [Middleware],
-        nextIndex index: Int = 0
-    ) async throws -> Response {
-        let lastIndex = middleware.count - 1
-
-        if index > lastIndex {
             return try await handle(request: request, route: route)
         }
 
-        return try await middleware[index].handle(request: request) { [self] request in
-            if index == lastIndex {
-                return try await handle(request: request, route: route)
-            }
+        return .init(status: .notFound)
+    }
 
-            return try await handle(request: request, route: route, middleware: middleware, nextIndex: index + 1)
+    private func handle(request: Request, route: Route, next index: Int = 0) async throws -> Response {
+        if index > route.middleware.count - 1 {
+            var request = request
+            request.setAttribute("_route", value: route)
+            let result = try await route.handler(request)
+
+            return result as? Response ?? .init("\(result)")
+        }
+
+        return try await route.middleware[index].handle(request: request) { request in
+            try await handle(request: request, route: route, next: index + 1)
         }
     }
 }

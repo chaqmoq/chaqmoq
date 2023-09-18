@@ -17,7 +17,7 @@ public final class Chaqmoq: TrieRouter {
     /// A list of registered `Middleware`.
     public var middleware: [Middleware] {
         get { server.middleware }
-        set { server.middleware = newValue }
+        set { server.middleware = newValue + [RoutingMiddleware()] }
     }
 
     /// The current application's dependency injection container for services.
@@ -44,7 +44,7 @@ public final class Chaqmoq: TrieRouter {
         super.init()
 
         resolver.register(Router.self, scoped: .singleton) { [unowned self] _ in self }
-        middleware = [RoutingMiddleware()]
+        middleware = .init()
     }
 }
 

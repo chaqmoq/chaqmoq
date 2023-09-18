@@ -12,7 +12,7 @@ final class ChaqmoqTests: XCTestCase {
         XCTAssertEqual(app.environment, .development)
         XCTAssertTrue(app.eventLoopGroup === app.server.eventLoopGroup)
         XCTAssertEqual(app.middleware.count, 1)
-        XCTAssertTrue(type(of: app.middleware.first!) == RoutingMiddleware.self)
+        XCTAssertTrue(type(of: app.middleware.last!) == RoutingMiddleware.self)
         XCTAssertTrue(app.resolver === Resolver.main)
     }
 
@@ -30,7 +30,7 @@ final class ChaqmoqTests: XCTestCase {
         XCTAssertEqual(app.environment, environment)
         XCTAssertTrue(app.eventLoopGroup === app.server.eventLoopGroup)
         XCTAssertEqual(app.middleware.count, 1)
-        XCTAssertTrue(type(of: app.middleware.first!) == RoutingMiddleware.self)
+        XCTAssertTrue(type(of: app.middleware.last!) == RoutingMiddleware.self)
         XCTAssertTrue(app.resolver === resolver)
     }
 }

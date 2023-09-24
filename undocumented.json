@@ -1,0 +1,12 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/runner/work/chaqmoq/chaqmoq/Sources/Chaqmoq/Request.swift",
+      "line": 2,
+      "symbol": "Request.route",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/runner/work/chaqmoq/chaqmoq"
+}

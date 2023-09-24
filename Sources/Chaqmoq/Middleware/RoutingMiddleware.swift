@@ -5,8 +5,6 @@ import Routing
 struct RoutingMiddleware: Middleware {
     @Injected private(set) var router: Router
 
-    init() {}
-
     func handle(
         request: Request,
         nextHandler: @escaping (Request) async throws -> Response

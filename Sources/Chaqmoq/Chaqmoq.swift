@@ -1,7 +1,5 @@
 import Foundation
-import HTTP
 import Resolver
-import Routing
 
 /// Helps to create, run, and shut down `Chaqmoq` applications.
 public final class Chaqmoq: TrieRouter {

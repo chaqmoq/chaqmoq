@@ -1,9 +1,7 @@
-import HTTP
 import Resolver
-import Routing
 
 struct RoutingMiddleware: Middleware {
-    @Injected private(set) var router: Router
+    @Injected private var router: Router
 
     func handle(
         request: Request,

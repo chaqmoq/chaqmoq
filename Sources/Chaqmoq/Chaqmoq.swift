@@ -18,6 +18,12 @@ public final class Chaqmoq: TrieRouter {
         set { server.middleware = newValue + [RoutingMiddleware()] }
     }
 
+    /// A list of registered `ErrorMiddleware`.
+    public var errorMiddleware: [ErrorMiddleware] {
+        get { server.errorMiddleware }
+        set { server.errorMiddleware = newValue }
+    }
+
     /// The current application's dependency injection container for services.
     public let resolver: Resolver
 
@@ -43,6 +49,7 @@ public final class Chaqmoq: TrieRouter {
 
         resolver.register(Router.self, scoped: .singleton) { [unowned self] _ in self }
         middleware = .init()
+        errorMiddleware = .init()
     }
 }
 

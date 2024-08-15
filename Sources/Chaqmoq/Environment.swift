@@ -9,7 +9,7 @@ public struct Environment {
     /// Initializes a new instance of `Environment` with a name.
     ///
     /// - Parameter name: The name for a new `Environment`. Defaults to the `Environment` variable with the `CHAQMOQ_ENV` key or falls back
-    /// to the `development` `Environment` if it doesn't exist or the provided name is empty.
+    /// to the `development` `Environment` if it doesn't exist or not provided.
     public init(name: String = Environment.get("CHAQMOQ_ENV") ?? "") {
         self.name = name.isEmpty ? Environment.development.name : name
     }

@@ -1,5 +1,4 @@
 @testable import Chaqmoq
-import Resolver
 import XCTest
 
 final class ChaqmoqTests: XCTestCase {
@@ -13,17 +12,15 @@ final class ChaqmoqTests: XCTestCase {
         XCTAssertTrue(app.eventLoopGroup === app.server.eventLoopGroup)
         XCTAssertEqual(app.middleware.count, 1)
         XCTAssertTrue(type(of: app.middleware.last!) == RoutingMiddleware.self)
-        XCTAssertTrue(app.resolver === Resolver.main)
     }
 
     func testInit() {
         // Arrange
         let configuration = Chaqmoq.Configuration()
         let environment = Environment.testing
-        let resolver = Resolver()
 
         // Act
-        let app = Chaqmoq(configuration: configuration, environment: environment, resolver: resolver)
+        let app = Chaqmoq(configuration: configuration, environment: environment)
 
         // Assert
         XCTAssertEqual(app.configuration, configuration)
@@ -31,7 +28,6 @@ final class ChaqmoqTests: XCTestCase {
         XCTAssertTrue(app.eventLoopGroup === app.server.eventLoopGroup)
         XCTAssertEqual(app.middleware.count, 1)
         XCTAssertTrue(type(of: app.middleware.last!) == RoutingMiddleware.self)
-        XCTAssertTrue(app.resolver === resolver)
     }
 }
 

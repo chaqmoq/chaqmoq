@@ -1,5 +1,4 @@
 import Foundation
-import Resolver
 
 /// Helps to create, run, and shut down `Chaqmoq` applications.
 public final class Chaqmoq: TrieRouter {
@@ -15,7 +14,7 @@ public final class Chaqmoq: TrieRouter {
     /// A list of registered `Middleware`.
     public var middleware: [Middleware] {
         get { server.middleware }
-        set { server.middleware = newValue + [RoutingMiddleware()] }
+        set { server.middleware = newValue + [RoutingMiddleware(router: self)] }
     }
 
     /// A list of registered `ErrorMiddleware`.
@@ -24,9 +23,6 @@ public final class Chaqmoq: TrieRouter {
         set { server.errorMiddleware = newValue }
     }
 
-    /// The current application's dependency injection container for services.
-    public let resolver: Resolver
-
     let server: Server
 
     /// Initializes a new instance of `Chaqmoq` application.
@@ -34,20 +30,16 @@ public final class Chaqmoq: TrieRouter {
     /// - Parameters:
     ///   - configuration: A `Configuration` for an application.
     ///   - environment: An `Environment` for an application. Defaults to `.development`.
-    ///   - resolver: An application's dependency injection container for services. Defaults to `.main`.
     public init(
         configuration: Configuration = .init(),
-        environment: Environment = .init(),
-        resolver: Resolver = .main
+        environment: Environment = .init()
     ) {
         self.configuration = configuration
         self.environment = environment
-        self.resolver = resolver
         server = Server(configuration: configuration.server)
 
         super.init()
 
-        resolver.register(Router.self, scoped: .singleton) { [unowned self] _ in self }
         middleware = .init()
         errorMiddleware = .init()
     }

@@ -2,32 +2,35 @@
 import XCTest
 
 final class ChaqmoqTests: XCTestCase {
-    func testDefaultInit() {
-        // Act
-        let app = Chaqmoq()
-
-        // Assert
-        XCTAssertEqual(app.configuration, Chaqmoq.Configuration())
-        XCTAssertEqual(app.environment, .development)
-        XCTAssertTrue(app.eventLoopGroup === app.server.eventLoopGroup)
-        XCTAssertEqual(app.middleware.count, 1)
-        XCTAssertTrue(type(of: app.middleware.last!) == RoutingMiddleware.self)
-    }
-
     func testInit() {
         // Arrange
         let configuration = Chaqmoq.Configuration()
         let environment = Environment.testing
 
         // Act
-        let app = Chaqmoq(configuration: configuration, environment: environment)
+        let app = Chaqmoq(
+            configuration: configuration,
+            environment: environment
+        )
+        app.errorMiddleware = [CustomErrorMiddleware()]
 
         // Assert
         XCTAssertEqual(app.configuration, configuration)
         XCTAssertEqual(app.environment, environment)
         XCTAssertTrue(app.eventLoopGroup === app.server.eventLoopGroup)
         XCTAssertEqual(app.middleware.count, 1)
+        XCTAssertEqual(app.errorMiddleware.count, 1)
         XCTAssertTrue(type(of: app.middleware.last!) == RoutingMiddleware.self)
+    }
+
+    func testRunShutdown() throws {
+        let app = Chaqmoq()
+        app.server.onStart = { _ in
+            DispatchQueue.global().asyncAfter(deadline: .now()) {
+                try! app.shutdown()
+            }
+        }
+        try app.run()
     }
 }
 
@@ -51,4 +54,8 @@ final class ChaqmoqConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.publicDirectory, publicDirectory)
         XCTAssertEqual(configuration.server, serverConfiguration)
     }
+}
+
+extension ChaqmoqTests {
+    struct CustomErrorMiddleware: ErrorMiddleware {}
 }

@@ -1,5 +1,3 @@
-import Foundation
-
 /// Helps to create, run, and shut down `Chaqmoq` applications.
 public final class Chaqmoq: TrieRouter {
     /// The current application's `Configuration`.
@@ -77,7 +75,8 @@ extension Chaqmoq {
         ///
         /// - Parameters:
         ///   - identifier: A unique identifier for an application. Defaults to `dev.chaqmoq`.
-        ///   - publicDirectory: A path to a directory for public resource files like javascript, css, images, etc. Defaults to the root directory.
+        ///   - publicDirectory: A path to a directory for public resource files like javascript, css, images, etc.
+        ///   Defaults to the root directory.
         ///   - server: A server configuration. Defaults to the default `Server.Configuration`.
         public init(
             identifier: String = "dev.chaqmoq",

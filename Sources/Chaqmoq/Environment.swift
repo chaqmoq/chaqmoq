@@ -1,15 +1,15 @@
 import Foundation
 
-/// Manages an application's `Environment` such as `.production`, `.development`, and `.testing`. Enables to create a custom `Environment`
-/// and provides access to `Environment` variables.
+/// Manages an application's `Environment` such as `.production`, `.development`, and `.testing`.Enables to create a
+/// custom `Environment` and provides access to `Environment` variables.
 public struct Environment {
     /// The name of an `Environment`.
     public let name: String
 
     /// Initializes a new instance of `Environment` with a name.
     ///
-    /// - Parameter name: The name for a new `Environment`. Defaults to the `Environment` variable with the `CHAQMOQ_ENV` key or falls back
-    /// to the `development` `Environment` if it doesn't exist or not provided.
+    /// - Parameter name: The name for a new `Environment`. Defaults to the `Environment` variable with the
+    /// `CHAQMOQ_ENV` key or falls back to the `development` `Environment` if it doesn't exist or not provided.
     public init(name: String = Environment.get("CHAQMOQ_ENV") ?? "") {
         self.name = name.isEmpty ? Environment.development.name : name
     }

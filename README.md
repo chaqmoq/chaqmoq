@@ -314,11 +314,13 @@ struct LoggingMiddleware: Middleware {
 
 ## Error Handling
 
-Assign `ErrorMiddleware` conformers to `app.errorMiddleware` to handle errors thrown anywhere in the middleware pipeline or route handlers:
+Assign `ErrorMiddleware` conformers to `app.errorMiddleware` to handle errors thrown anywhere in the middleware pipeline or route handlers.
+
+Conform to `ErrorMiddleware` and implement `handle(request:error:responder:)`. Call `responder(request, error)` to forward to the next error middleware in the chain, or return a response directly to short-circuit:
 
 ```swift
 struct AppErrorMiddleware: ErrorMiddleware {
-    func handle(error: Error, for request: Request) async -> Response {
+    func handle(request: Request, error: Error, responder: @escaping ErrorResponder) async throws -> Encodable {
         switch error {
         case let abort as AbortError:
             return Response(status: abort.status)
@@ -331,7 +333,7 @@ struct AppErrorMiddleware: ErrorMiddleware {
 app.errorMiddleware = [AppErrorMiddleware()]
 ```
 
-Multiple error middleware are applied in order, giving each a chance to handle the error.
+Multiple error middleware are applied in order. Each conformer receives the request, the thrown error, and a `responder` closure — call `responder(request, error)` to pass the error to the next error middleware, or return a response to stop propagation.
 
 ## Request
 

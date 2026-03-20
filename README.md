@@ -191,17 +191,17 @@ Parameters use curly brace notation and support several forms:
 
 ```swift
 app.get("users/{id<\\d+>}") { request in
-    let id = request.route[parameter: "id"] as Int?
+    let id = request.route?[parameter: "id"] as? Int
     return "User \(id ?? 0)"
 }
 
 app.get("posts/{page?1}") { request in
-    let page = request.route[parameter: "page"] as Int?
+    let page = request.route?[parameter: "page"] as? Int
     return "Page \(page ?? 1)"
 }
 ```
 
-Typed parameter extraction is available via subscript — `route[parameter: "id"]` can be cast to `Int?`, `String?`, `UUID?`, or `Date?` depending on the captured value.
+Typed parameter extraction is available via subscript — `route?[parameter: "id"]` can be cast to `Int?`, `String?`, `UUID?`, or `Date?` depending on the captured value.
 
 Constant segments always take priority over parameters at the same position, so `GET /posts/latest` and `GET /posts/{id<\\d+>}` can coexist without conflict.
 
@@ -340,16 +340,16 @@ The `Request` object is passed to every middleware and route handler, exposing h
 
 ```swift
 app.get("greet/{name}") { request in
-    let name = request.route[parameter: "name"] as String? ?? "stranger"
+    let name = request.route?[parameter: "name"] as? String ?? "stranger"
     return "Hello, \(name)!"
 }
 ```
 
-Typed parameter extraction is done via `request.route[parameter:]`, which returns `String?`, `Int?`, `UUID?`, or `Date?` depending on the captured value:
+Typed parameter extraction is done via `request.route?[parameter:]`, which returns `String?`, `Int?`, `UUID?`, or `Date?` depending on the captured value:
 
 ```swift
 app.get("users/{id<\\d+>}") { request in
-    let id = request.route[parameter: "id"] as Int?
+    let id = request.route?[parameter: "id"] as? Int
     return "User \(id ?? 0)"
 }
 ```

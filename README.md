@@ -15,7 +15,6 @@
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Chaqmoq CLI](#chaqmoq-cli)
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
 - [Environments](#environments)
@@ -47,6 +46,61 @@
 
 ## Installation
 
+### Chaqmoq CLI
+
+[Chaqmoq CLI](https://github.com/chaqmoq/cli) is a companion command-line tool that scaffolds new applications, runs them from the terminal, and opens them in Xcode.
+
+#### Installation
+
+Clone the repository and build the release binary:
+
+```sh
+git clone https://github.com/chaqmoq/cli.git
+cd cli
+swift build -c release
+cp .build/release/Run /usr/local/bin/chaqmoq
+```
+
+#### Create a new application
+
+```sh
+chaqmoq new --name MyApp
+# or
+chaqmoq new -n MyApp
+```
+
+This clones the official Chaqmoq template, injects the application name into `Package.swift`, removes template-specific files, and runs an initial `swift build`.
+
+#### Run the application
+
+```sh
+chaqmoq run
+```
+
+Pass `--env` (or `-e`) to set the runtime environment. The CLI loads the corresponding `.env.<environment>` file and sets `CHAQMOQ_ENV` automatically:
+
+```sh
+chaqmoq run --env production
+chaqmoq run -e staging
+```
+
+If no environment is specified it defaults to `development`. The app listens on port **8080** by default — open `http://localhost:8080` once it starts. The CLI also handles `SIGTERM` and `SIGINT` gracefully, releasing port 8080 on shutdown.
+
+#### Open in Xcode
+
+```sh
+chaqmoq xcode
+```
+
+Opens the application's `Package.swift` in Xcode. Pass `--name` (or `-n`) when running the command from outside the project directory:
+
+```sh
+chaqmoq xcode --name MyApp
+chaqmoq xcode -n MyApp
+```
+
+### Manually
+
 Add Chaqmoq to your `Package.swift`:
 
 ```swift
@@ -74,59 +128,6 @@ Then import the framework in your source files:
 
 ```swift
 import Chaqmoq
-```
-
-## Chaqmoq CLI
-
-[Chaqmoq CLI](https://github.com/chaqmoq/cli) is a companion command-line tool that scaffolds new applications, runs them from the terminal, and opens them in Xcode.
-
-### Installation
-
-Clone the repository and build the release binary:
-
-```sh
-git clone https://github.com/chaqmoq/cli.git
-cd cli
-swift build -c release
-cp .build/release/Run /usr/local/bin/chaqmoq
-```
-
-### Create a new application
-
-```sh
-chaqmoq new --name MyApp
-# or
-chaqmoq new -n MyApp
-```
-
-This clones the official Chaqmoq template, injects the application name into `Package.swift`, removes template-specific files, and runs an initial `swift build`.
-
-### Run the application
-
-```sh
-chaqmoq run
-```
-
-Pass `--env` (or `-e`) to set the runtime environment. The CLI loads the corresponding `.env.<environment>` file and sets `CHAQMOQ_ENV` automatically:
-
-```sh
-chaqmoq run --env production
-chaqmoq run -e staging
-```
-
-If no environment is specified it defaults to `development`. The app listens on port **8080** by default — open `http://localhost:8080` once it starts. The CLI also handles `SIGTERM` and `SIGINT` gracefully, releasing port 8080 on shutdown.
-
-### Open in Xcode
-
-```sh
-chaqmoq xcode
-```
-
-Opens the application's `Package.swift` in Xcode. Pass `--name` (or `-n`) when running the command from outside the project directory:
-
-```sh
-chaqmoq xcode --name MyApp
-chaqmoq xcode -n MyApp
 ```
 
 ## Getting Started

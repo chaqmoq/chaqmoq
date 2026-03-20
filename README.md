@@ -114,7 +114,7 @@ chaqmoq run --env production
 chaqmoq run -e staging
 ```
 
-If no environment is specified it defaults to `development`. The CLI also handles `SIGTERM` and `SIGINT` gracefully, releasing port 8080 on shutdown.
+If no environment is specified it defaults to `development`. The app listens on port **8080** by default — open `http://localhost:8080` once it starts. The CLI also handles `SIGTERM` and `SIGINT` gracefully, releasing port 8080 on shutdown.
 
 ### Open in Xcode
 

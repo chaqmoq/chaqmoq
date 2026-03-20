@@ -114,7 +114,7 @@ let package = Package(
         .macOS(.v12)
     ],
     dependencies: [
-        .package(url: "https://github.com/chaqmoq/chaqmoq.git", .branch("master"))
+        .package(url: "https://github.com/chaqmoq/chaqmoq.git", branch: "master")
     ],
     targets: [
         .executableTarget(

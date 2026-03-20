@@ -131,7 +131,21 @@ chaqmoq xcode -n MyApp
 
 ## Getting Started
 
-The following is a minimal application that starts an HTTP server and responds to `GET /`:
+### Using the CLI
+
+The fastest way to get started is with the [Chaqmoq CLI](#chaqmoq-cli). Run the following to scaffold, enter, and start your project:
+
+```sh
+chaqmoq new --name MyApp
+cd MyApp
+chaqmoq run
+```
+
+Open `Sources/MyApp/main.swift` — this is the entry point of your application.
+
+### Manually
+
+Create a new Swift executable package, add Chaqmoq as a dependency in `Package.swift` (see [Installation](#installation)), then create `Sources/<AppName>/main.swift` with:
 
 ```swift
 import Chaqmoq
@@ -144,6 +158,14 @@ app.get { _ in
 
 try app.run()
 ```
+
+Start the server with:
+
+```sh
+swift run
+```
+
+The app listens on port **8080** by default — open `http://localhost:8080` once it starts.
 
 `run()` blocks the calling thread until the server stops. Call `shutdown()` from another thread or signal handler to stop it gracefully.
 

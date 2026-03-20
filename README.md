@@ -13,3 +13,381 @@
     </p>
     <p><a href="https://chaqmoq.dev">Chaqmoq</a> is a non-blocking server-side web framework consisting of a set of reusable standalone packages and powered by fast, secure, and powerful <a href="https://swift.org">Swift</a> language and <a href="https://github.com/apple/swift-nio">SwiftNIO</a>. Read the <a href="https://docs.chaqmoq.dev">documentation</a> for more info.</p>
 </div>
+
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Configuration](#configuration)
+- [Environments](#environments)
+- [Routing](#routing)
+- [Middleware](#middleware)
+- [Error Handling](#error-handling)
+- [Request](#request)
+- [Response](#response)
+- [Running and Shutting Down](#running-and-shutting-down)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- **Non-blocking I/O** — built on [SwiftNIO](https://github.com/apple/swift-nio) for high-throughput, event-driven networking
+- **Trie-based router** — fast route resolution with support for dynamic parameters
+- **Flexible middleware** — composable app-level and route-level middleware pipelines
+- **Ergonomic handlers** — return any `Encodable` value and the framework wraps it in a `200 OK` response automatically, or return an explicit `Response` for full control
+- **Environment-aware** — built-in `production`, `development`, and `testing` environments configurable via a process variable
+- **Modular architecture** — HTTP and routing are standalone packages that can be used independently
+
+## Requirements
+
+| Chaqmoq | Swift | Platforms |
+|---|---|---|
+| `master` | 5.5+ | macOS 12+, iOS 13+, tvOS 13+, watchOS 6+ |
+
+## Installation
+
+Add Chaqmoq to your `Package.swift`:
+
+```swift
+// swift-tools-version:5.5
+
+import PackageDescription
+
+let package = Package(
+    name: "MyApp",
+    dependencies: [
+        .package(url: "https://github.com/chaqmoq/chaqmoq.git", .branch("master"))
+    ],
+    targets: [
+        .executableTarget(
+            name: "MyApp",
+            dependencies: [
+                .product(name: "Chaqmoq", package: "chaqmoq")
+            ]
+        )
+    ]
+)
+```
+
+Then import the framework in your source files:
+
+```swift
+import Chaqmoq
+```
+
+## Getting Started
+
+The following is a minimal application that starts an HTTP server and responds to `GET /`:
+
+```swift
+import Chaqmoq
+
+let app = Chaqmoq()
+
+app.get { _ in
+    "Hello, World!"
+}
+
+try app.run()
+```
+
+`run()` blocks the calling thread until the server stops. Call `shutdown()` from another thread or signal handler to stop it gracefully.
+
+## Configuration
+
+`Chaqmoq` accepts a `Configuration` value that controls the application identifier, the static files directory, and the underlying server settings.
+
+```swift
+let configuration = Chaqmoq.Configuration(
+    identifier: "com.myapp",
+    publicDirectory: "Public",
+    server: .init()
+)
+
+let app = Chaqmoq(configuration: configuration)
+```
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `identifier` | `String` | `"dev.chaqmoq"` | A unique identifier for the application, such as a reverse domain name |
+| `publicDirectory` | `String` | `"Public"` | Path to the static files directory, relative to the working directory |
+| `server` | `Server.Configuration` | `.init()` | Configuration for the underlying HTTP server (port, TLS, etc.) |
+
+## Environments
+
+Chaqmoq supports runtime environments to vary behaviour across development, testing, and production without code changes.
+
+```swift
+// Use a built-in preset
+let app = Chaqmoq(environment: .production)
+
+// Use a custom environment
+let app = Chaqmoq(environment: Environment(name: "staging"))
+```
+
+The environment defaults to the value of the `CHAQMOQ_ENV` process variable, falling back to `.development` if the variable is absent or empty:
+
+```sh
+CHAQMOQ_ENV=production swift run
+```
+
+**Built-in presets:**
+
+| Preset | Name | Intended use |
+|---|---|---|
+| `.development` | `"development"` | Local development (default) |
+| `.production` | `"production"` | Live deployments |
+| `.testing` | `"testing"` | Automated test runs |
+
+Read any process environment variable at runtime using:
+
+```swift
+let region = Environment.get("AWS_REGION")  // String? — nil if not set
+```
+
+Two `Environment` values are equal when their names match:
+
+```swift
+Environment(name: "staging") == Environment(name: "staging")  // true
+```
+
+## Routing
+
+Routes are registered directly on the `Chaqmoq` instance. Handlers receive a `Request` and return any `Encodable` value or an explicit `Response`.
+
+```swift
+// Return a plain value — automatically wrapped in a 200 OK response
+app.get { _ in
+    "Hello, World!"
+}
+
+// Return a Codable struct
+app.get("users") { _ in
+    [User(id: 1, name: "Alice"), User(id: 2, name: "Bob")]
+}
+
+// Return an explicit Response for full control over status and headers
+app.post("users") { request in
+    let user = try request.body.decode(User.self)
+    return Response(status: .created)
+}
+```
+
+**Route parameters:**
+
+```swift
+app.get("users", ":id") { request in
+    let id = request.parameters.get("id")
+    return "User \(id ?? "unknown")"
+}
+```
+
+**Supported HTTP methods:** `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`
+
+## Middleware
+
+Middleware intercepts requests before they reach a route handler. It can inspect or modify the request, short-circuit with a response, or pass control to the next step in the pipeline.
+
+### App-level middleware
+
+App-level middleware runs for every request. Assign an array to `app.middleware` — `RoutingMiddleware` is always appended last automatically and should not be included manually.
+
+```swift
+app.middleware = [
+    LoggingMiddleware(),
+    CORSMiddleware(),
+    AuthMiddleware()
+]
+```
+
+Middleware executes in array order. In the example above, `LoggingMiddleware` runs first, then `CORSMiddleware`, then `AuthMiddleware`, and finally routing resolves the request to its handler.
+
+### Route-level middleware
+
+Route-level middleware runs only for a specific route, after app-level middleware:
+
+```swift
+app.get("admin", middleware: [RequireAdminMiddleware()]) { request in
+    "Admin panel"
+}
+```
+
+Multiple route-level middleware are applied in order:
+
+```swift
+app.post("upload", middleware: [AuthMiddleware(), RateLimitMiddleware()]) { request in
+    // handle upload
+}
+```
+
+### Writing middleware
+
+Conform to the `Middleware` protocol and implement `handle(request:responder:)`. Call `responder(request)` to pass control to the next middleware or the route handler.
+
+```swift
+struct LoggingMiddleware: Middleware {
+    func handle(request: Request, responder: @escaping Responder) async throws -> Encodable {
+        print("→ \(request.method) \(request.url.path)")
+        let response = try await responder(request)
+        print("← \(response)")
+        return response
+    }
+}
+```
+
+## Error Handling
+
+Assign `ErrorMiddleware` conformers to `app.errorMiddleware` to handle errors thrown anywhere in the middleware pipeline or route handlers:
+
+```swift
+struct AppErrorMiddleware: ErrorMiddleware {
+    func handle(error: Error, for request: Request) async -> Response {
+        switch error {
+        case let abort as AbortError:
+            return Response(status: abort.status)
+        default:
+            return Response(status: .internalServerError)
+        }
+    }
+}
+
+app.errorMiddleware = [AppErrorMiddleware()]
+```
+
+Multiple error middleware are applied in order, giving each a chance to handle the error.
+
+## Request
+
+The `Request` object is passed to every middleware and route handler, exposing headers, body, URL, and route parameters.
+
+```swift
+app.get("greet", ":name") { request in
+    let name = request.parameters.get("name") ?? "stranger"
+    return "Hello, \(name)!"
+}
+```
+
+**Matched route:** Once routing resolves, the matched `Route` is available via `request.route`. This property is `nil` in app-level middleware, since routing has not yet run at that point.
+
+```swift
+struct LoggingMiddleware: Middleware {
+    func handle(request: Request, responder: @escaping Responder) async throws -> Encodable {
+        // request.route is nil here — routing resolves after app-level middleware
+        let response = try await responder(request)
+        return response
+    }
+}
+
+app.get("hello") { request in
+    // request.route is set here
+    print(request.route?.path ?? "unknown")
+    return "Hello!"
+}
+```
+
+## Response
+
+Return any `Encodable` value from a route handler and the framework serialises it and wraps it in a `200 OK` response:
+
+```swift
+app.get { _ in "Hello" }           // 200 OK, body: "Hello"
+app.get("count") { _ in 1 }        // 200 OK, body: 1
+app.get("user") { _ in             // 200 OK, body: JSON-encoded User
+    User(id: 1, name: "Alice")
+}
+```
+
+Return an explicit `Response` when you need control over the status code or headers:
+
+```swift
+app.post("users") { request in
+    return Response(status: .created)
+}
+
+app.delete("users/:id") { request in
+    return Response(status: .noContent)
+}
+```
+
+## Running and Shutting Down
+
+`run()` starts the server and blocks the calling thread. It throws if the server fails to start:
+
+```swift
+try app.run()
+```
+
+`shutdown()` stops the server and releases its resources. Because `run()` blocks, `shutdown()` must be called from a different thread — for example, from a signal handler:
+
+```swift
+let source = DispatchSource.makeSignalSource(signal: SIGTERM, queue: .global())
+source.setEventHandler { try? app.shutdown() }
+source.resume()
+
+try app.run()
+```
+
+A `DispatchSemaphore` can guarantee that `shutdown()` is called only after the server is fully started:
+
+```swift
+let semaphore = DispatchSemaphore(value: 0)
+app.server.onStart = { _ in semaphore.signal() }
+
+DispatchQueue.global().async {
+    semaphore.wait()
+    try? app.shutdown()
+}
+
+try app.run()
+```
+
+## Testing
+
+Run the full test suite with:
+
+```sh
+swift test
+```
+
+When writing tests for your own routes, use `Environment.testing` and `EmbeddedEventLoop` from SwiftNIO for a lightweight, synchronous event loop:
+
+```swift
+import XCTest
+@testable import Chaqmoq
+
+final class MyRouteTests: XCTestCase {
+    func testGreetRoute() async throws {
+        // Arrange
+        let app = Chaqmoq(environment: .testing)
+        let middleware = RoutingMiddleware(router: app)
+        let request = Request(eventLoop: EmbeddedEventLoop())
+        app.get { _ in "Hello, World!" }
+
+        // Act
+        let result = try await middleware.handle(request: request) { _ in fatalError() }
+        let response = try XCTUnwrap(result as? Response)
+
+        // Assert
+        XCTAssertEqual(response.status, .ok)
+    }
+}
+```
+
+## Contributing
+
+Contributions are welcome. Please read the [Contributing Guide](CONTRIBUTING.md) before opening a pull request:
+
+1. Fork the repository and create a branch from `master`
+2. Add tests for any new behaviour
+3. Update documentation for any API changes
+4. Ensure `swift test` passes and the code lints cleanly
+5. Open a pull request
+
+Bug reports and feature requests go through [GitHub Issues](https://github.com/chaqmoq/chaqmoq/issues). The project follows [Swift's API Design Guidelines](https://swift.org/documentation/api-design-guidelines/) and enforces style via [SwiftLint](https://github.com/realm/SwiftLint) (4-space indentation, 120-character line limit).
+
+## License
+
+Chaqmoq is released under the [MIT License](LICENSE).

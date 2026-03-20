@@ -23,6 +23,7 @@
 - [Configuration](#configuration)
 - [Environments](#environments)
 - [Routing](#routing)
+- [Route Groups](#route-groups)
 - [Middleware](#middleware)
 - [Error Handling](#error-handling)
 - [Request](#request)
@@ -186,6 +187,50 @@ app.get("users", ":id") { request in
 ```
 
 **Supported HTTP methods:** `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`
+
+## Route Groups
+
+Route groups let you share a common path prefix and optional name prefix across multiple related routes, keeping registration concise and organised.
+
+### Closure-based groups
+
+`group(_:name:_:)` takes a path prefix, an optional name prefix, and a closure that receives a group object for registering nested routes:
+
+```swift
+app.group("/api/v1", name: "api.v1.") { v1 in
+    v1.get("/users", name: "users.index") { _ in ... }       // GET  /api/v1/users
+    v1.post("/users", name: "users.create") { _ in ... }     // POST /api/v1/users
+    v1.get("/users/:id", name: "users.show") { _ in ... }    // GET  /api/v1/users/:id
+    v1.put("/users/:id", name: "users.update") { _ in ... }  // PUT  /api/v1/users/:id
+    v1.delete("/users/:id", name: "users.delete") { _ in ... } // DELETE /api/v1/users/:id
+}
+```
+
+The name prefix is composed automatically, so `name: "users.index"` inside a `"api.v1."` group becomes the full route name `"api.v1.users.index"`.
+
+### Value-returning groups
+
+`grouped(_:name:)` returns an optional group object for use outside a closure:
+
+```swift
+guard let v2 = app.grouped("/api/v2", name: "api.v2.") else { return }
+v2.get("/posts") { _ in ... }  // GET /api/v2/posts
+```
+
+### Nested groups
+
+Groups can be nested to any depth — path and name prefixes compose automatically at each level:
+
+```swift
+app.group("/api") { api in
+    api.group("/v1") { v1 in
+        v1.get("/posts") { _ in ... }  // GET /api/v1/posts
+    }
+    api.group("/v2") { v2 in
+        v2.get("/posts") { _ in ... }  // GET /api/v2/posts
+    }
+}
+```
 
 ## Middleware
 

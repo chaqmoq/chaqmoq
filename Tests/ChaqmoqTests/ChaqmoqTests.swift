@@ -2,7 +2,7 @@
 import XCTest
 
 final class ChaqmoqTests: XCTestCase {
-    func testInit() {
+    func testInit() throws {
         // Arrange
         let configuration = Chaqmoq.Configuration()
         let environment = Environment.testing
@@ -20,14 +20,20 @@ final class ChaqmoqTests: XCTestCase {
         XCTAssertTrue(app.eventLoopGroup === app.server.eventLoopGroup)
         XCTAssertEqual(app.middleware.count, 1)
         XCTAssertEqual(app.errorMiddleware.count, 1)
-        XCTAssertTrue(type(of: app.middleware.last!) == RoutingMiddleware.self)
+        let lastMiddleware = try XCTUnwrap(app.middleware.last)
+        XCTAssertTrue(type(of: lastMiddleware) == RoutingMiddleware.self)
     }
 
     func testRunShutdown() throws {
         let app = Chaqmoq()
-        app.server.onStart = { _ in
-            DispatchQueue.global().asyncAfter(deadline: .now()) {
-                try! app.shutdown()
+        let semaphore = DispatchSemaphore(value: 0)
+        app.server.onStart = { _ in semaphore.signal() }
+        DispatchQueue.global().async {
+            semaphore.wait()
+            do {
+                try app.shutdown()
+            } catch {
+                XCTFail("Failed to shut down app: \(error)")
             }
         }
         try app.run()

@@ -12,7 +12,7 @@ public final class Chaqmoq: TrieRouter {
     /// A list of registered `Middleware`.
     public var middleware: [Middleware] {
         get { server.middleware }
-        set { server.middleware = newValue + [RoutingMiddleware(router: self)] }
+        set { server.middleware = newValue.filter { !($0 is RoutingMiddleware) } + [RoutingMiddleware(router: self)] }
     }
 
     /// A list of registered `ErrorMiddleware`.

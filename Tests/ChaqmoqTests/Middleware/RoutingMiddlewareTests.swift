@@ -11,7 +11,8 @@ final class RoutingMiddlewareTests: XCTestCase {
         let middleware = RoutingMiddleware(router: app)
 
         // Act
-        var response = try await middleware.handle(request: initialRequest) { _ in fatalError() } as! Response
+        var result = try await middleware.handle(request: initialRequest) { _ in fatalError() }
+        var response = try XCTUnwrap(result as? Response)
 
         // Assert
         XCTAssertEqual(response.status, .notFound)
@@ -26,7 +27,8 @@ final class RoutingMiddlewareTests: XCTestCase {
         }
 
         // Act
-        response = try await middleware.handle(request: initialRequest) { _ in fatalError() } as! Response
+        result = try await middleware.handle(request: initialRequest) { _ in fatalError() }
+        response = try XCTUnwrap(result as? Response)
 
         // Assert
         XCTAssertEqual(response.status, expectedResponse.status)

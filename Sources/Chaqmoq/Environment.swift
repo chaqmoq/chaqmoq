@@ -1,41 +1,44 @@
 import Foundation
 
-/// Manages an application's `Environment` such as `.production`, `.development`, and `.testing`. Enables to create a
-/// custom `Environment` and provides access to `Environment` variables.
+/// Represents the runtime environment of a Chaqmoq application.
+///
+/// Use the built-in presets — `.production`, `.development`, `.testing` — or create a custom
+/// environment by providing a name. The active environment can also be set via the `CHAQMOQ_ENV`
+/// process variable.
 public struct Environment {
-    /// The name of an `Environment`.
+    /// The name of the environment (e.g. `"development"`, `"production"`).
     public let name: String
 
-    /// Initializes a new instance of `Environment` with a name.
+    /// Creates an environment with the given name.
     ///
-    /// - Parameter name: The name for a new `Environment`. Defaults to the `Environment` variable with the
-    /// `CHAQMOQ_ENV` key or falls back to the `development` `Environment` if it doesn't exist or not provided.
+    /// - Parameter name: The environment name. Defaults to the value of the `CHAQMOQ_ENV` process
+    ///   variable, or `"development"` if the variable is absent or empty.
     public init(name: String = Self.get("CHAQMOQ_ENV") ?? "") {
         self.name = name.isEmpty ? Self.development.name : name
     }
 
-    /// Gets an `Environment` variable by key.
+    /// Returns the value of a process environment variable.
     ///
-    /// - Parameter key: A key for an `Environment` variable.
-    /// - Returns: An `Environment` variable if it exists or `nil` if it doesn't.
+    /// - Parameter key: The name of the environment variable.
+    /// - Returns: The variable's value, or `nil` if it is not set.
     public static func get(_ key: String) -> String? {
         ProcessInfo.processInfo.environment[key]
     }
 }
 
 extension Environment {
-    /// An `Environment` for deploying an application.
+    /// The production environment, intended for live deployments.
     public static let production = Self(name: "production")
 
-    /// An `Environment` for developing an application.
+    /// The development environment, intended for local development.
     public static let development = Self(name: "development")
 
-    /// An `Environment` for testing an application.
+    /// The testing environment, intended for automated tests.
     public static let testing = Self(name: "testing")
 }
 
 extension Environment: Equatable {
-    /// See `Equatable`.
+    /// Two environments are equal when their names are equal.
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.name == rhs.name
     }

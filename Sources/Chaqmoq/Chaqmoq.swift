@@ -1,21 +1,22 @@
-/// Helps to create, run, and shut down `Chaqmoq` applications.
+/// The entry point for a Chaqmoq application. Manages routing, middleware, and server lifecycle.
 public final class Chaqmoq: TrieRouter {
-    /// The current application's `Configuration`.
+    /// The application's configuration.
     public let configuration: Configuration
 
-    /// The current application's `Environment`.
+    /// The environment the application is running in, such as `.development` or `.production`.
     public let environment: Environment
 
-    /// The current application's `EventLoopGroup`.
+    /// The event loop group used by the underlying server.
     public var eventLoopGroup: EventLoopGroup { server.eventLoopGroup }
 
-    /// A list of registered `Middleware`.
+    /// The middleware pipeline. `RoutingMiddleware` is always the last entry and is added automatically —
+    /// any `RoutingMiddleware` in the assigned value is removed before assignment to prevent duplication.
     public var middleware: [Middleware] {
         get { server.middleware }
         set { server.middleware = newValue.filter { !($0 is RoutingMiddleware) } + [RoutingMiddleware(router: self)] }
     }
 
-    /// A list of registered `ErrorMiddleware`.
+    /// The error-handling middleware pipeline.
     public var errorMiddleware: [ErrorMiddleware] {
         get { server.errorMiddleware }
         set { server.errorMiddleware = newValue }
@@ -23,11 +24,12 @@ public final class Chaqmoq: TrieRouter {
 
     let server: Server
 
-    /// Initializes a new instance of `Chaqmoq` application.
+    /// Creates a new Chaqmoq application.
     ///
     /// - Parameters:
-    ///   - configuration: A `Configuration` for an application.
-    ///   - environment: An `Environment` for an application. Defaults to `.development`.
+    ///   - configuration: The application configuration. Defaults to `Configuration()`.
+    ///   - environment: The environment to run in. Defaults to the `CHAQMOQ_ENV` process variable,
+    ///     or `.development` if the variable is absent or empty.
     public init(
         configuration: Configuration = .init(),
         environment: Environment = .init()
@@ -44,43 +46,44 @@ public final class Chaqmoq: TrieRouter {
 }
 
 extension Chaqmoq {
-    /// Runs an application.
+    /// Starts the server and begins accepting incoming requests. Blocks until the server stops.
     ///
-    /// - Throws: An error if an application can't be run.
+    /// - Throws: An error if the server fails to start.
     public func run() throws {
         try server.start()
     }
 
-    /// Shuts down an application.
+    /// Stops the server and releases its resources.
     ///
-    /// - Throws: An error if an application can't be shut down.
+    /// - Throws: An error if the server fails to stop.
     public func shutdown() throws {
         try server.stop()
     }
 }
 
 extension Chaqmoq {
-    /// Manages an application's `Configuration`.
+    /// Holds configuration values for a Chaqmoq application.
     public struct Configuration: Equatable {
-        /// A unique identifier for an application. For example, a reverse domain name like `dev.chaqmoq`.
+        /// A unique identifier for the application, such as a reverse domain name (e.g. `"dev.chaqmoq"`).
         public let identifier: String
 
-        /// A path to a directory for public resource files like javascript, css, images, etc.
+        /// The path to the directory used to serve static files such as HTML, CSS, JavaScript, and images.
+        /// Resolved relative to the working directory. Defaults to `"Public"`.
         public let publicDirectory: String
 
-        /// A server configuration.
+        /// The configuration for the underlying HTTP server.
         public var server: Server.Configuration
 
-        /// Initializes a new instance of `Configuration`.
+        /// Creates a new application configuration.
         ///
         /// - Parameters:
-        ///   - identifier: A unique identifier for an application. Defaults to `dev.chaqmoq`.
-        ///   - publicDirectory: A path to a directory for public resource files like javascript, css, images, etc.
-        ///   Defaults to the root directory.
-        ///   - server: A server configuration. Defaults to the default `Server.Configuration`.
+        ///   - identifier: A unique identifier for the application. Defaults to `"dev.chaqmoq"`.
+        ///   - publicDirectory: Path to the static files directory, relative to the working directory.
+        ///     Defaults to `"Public"`.
+        ///   - server: The underlying server configuration. Defaults to `Server.Configuration()`.
         public init(
             identifier: String = "dev.chaqmoq",
-            publicDirectory: String = "/",
+            publicDirectory: String = "Public",
             server: Server.Configuration = .init()
         ) {
             self.identifier = identifier

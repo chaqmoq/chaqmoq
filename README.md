@@ -180,7 +180,7 @@ app.post("users") { request in
 **Route parameters:**
 
 ```swift
-app.get("users", ":id") { request in
+app.get("users/{id}") { request in
     let id = request.parameters.get("id")
     return "User \(id ?? "unknown")"
 }
@@ -200,9 +200,9 @@ Route groups let you share a common path prefix and optional name prefix across 
 app.group("/api/v1", name: "api.v1.") { v1 in
     v1.get("/users", name: "users.index") { _ in ... }       // GET  /api/v1/users
     v1.post("/users", name: "users.create") { _ in ... }     // POST /api/v1/users
-    v1.get("/users/:id", name: "users.show") { _ in ... }    // GET  /api/v1/users/:id
-    v1.put("/users/:id", name: "users.update") { _ in ... }  // PUT  /api/v1/users/:id
-    v1.delete("/users/:id", name: "users.delete") { _ in ... } // DELETE /api/v1/users/:id
+    v1.get("/users/{id}", name: "users.show") { _ in ... }    // GET  /api/v1/users/{id}
+    v1.put("/users/{id}", name: "users.update") { _ in ... }  // PUT  /api/v1/users/{id}
+    v1.delete("/users/{id}", name: "users.delete") { _ in ... } // DELETE /api/v1/users/{id}
 }
 ```
 
@@ -309,7 +309,7 @@ Multiple error middleware are applied in order, giving each a chance to handle t
 The `Request` object is passed to every middleware and route handler, exposing headers, body, URL, and route parameters.
 
 ```swift
-app.get("greet", ":name") { request in
+app.get("greet/{name}") { request in
     let name = request.parameters.get("name") ?? "stranger"
     return "Hello, \(name)!"
 }
@@ -352,7 +352,7 @@ app.post("users") { request in
     return Response(status: .created)
 }
 
-app.delete("users/:id") { request in
+app.delete("users/{id}") { request in
     return Response(status: .noContent)
 }
 ```

@@ -42,7 +42,7 @@
 
 | Chaqmoq | Swift | Platforms |
 |---|---|---|
-| `master` | 5.10+ | macOS 12+, iOS 13+, tvOS 13+, watchOS 6+ |
+| `master` | 5.10+ | macOS 12+, Ubuntu |
 
 ## Installation
 
@@ -110,6 +110,9 @@ import PackageDescription
 
 let package = Package(
     name: "MyApp",
+    platforms: [
+        .macOS(.v12)
+    ],
     dependencies: [
         .package(url: "https://github.com/chaqmoq/chaqmoq.git", .branch("master"))
     ],

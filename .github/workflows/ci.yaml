@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   macos:
-    runs-on: macos-12
+    runs-on: macos-14
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
           args: "--module Chaqmoq --theme fullwidth --root-url https://chaqmoq.dev/chaqmoq --source-host github --source-host-url https://github.com/chaqmoq/chaqmoq"
   ubuntu:
     runs-on: ubuntu-latest
-    container: swift:5.8-jammy
+    container: swift:5.10-jammy
     steps:
       - name: Checkout
         uses: actions/checkout@v2

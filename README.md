@@ -179,12 +179,31 @@ app.post("users") { request in
 
 **Route parameters:**
 
+Parameters use curly brace notation and support several forms:
+
+| Syntax | Description |
+|---|---|
+| `{id}` | Captures any string |
+| `{id<\\d+>}` | Captures a value matching a regex |
+| `{page?1}` | Optional — falls back to `1` if omitted |
+| `{id!1}` | Forced default — must be explicitly provided, defaults to `1` |
+| `{id<\\d+>?1}` | Regex constraint combined with optional default |
+
 ```swift
-app.get("users/{id}") { request in
-    let id = request.parameters.get("id")
-    return "User \(id ?? "unknown")"
+app.get("users/{id<\\d+>}") { request in
+    let id = request.route[parameter: "id"] as Int?
+    return "User \(id ?? 0)"
+}
+
+app.get("posts/{page?1}") { request in
+    let page = request.route[parameter: "page"] as Int?
+    return "Page \(page ?? 1)"
 }
 ```
+
+Typed parameter extraction is available via subscript — `route[parameter: "id"]` can be cast to `Int?`, `String?`, `UUID?`, or `Date?` depending on the captured value.
+
+Constant segments always take priority over parameters at the same position, so `GET /posts/latest` and `GET /posts/{id<\\d+>}` can coexist without conflict.
 
 **Supported HTTP methods:** `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`
 
@@ -198,22 +217,33 @@ Route groups let you share a common path prefix and optional name prefix across 
 
 ```swift
 app.group("/api/v1", name: "api.v1.") { v1 in
-    v1.get("/users", name: "users.index") { _ in ... }       // GET  /api/v1/users
-    v1.post("/users", name: "users.create") { _ in ... }     // POST /api/v1/users
-    v1.get("/users/{id}", name: "users.show") { _ in ... }    // GET  /api/v1/users/{id}
-    v1.put("/users/{id}", name: "users.update") { _ in ... }  // PUT  /api/v1/users/{id}
+    v1.get("/users", name: "users.index") { _ in ... } // GET /api/v1/users
+    v1.post("/users", name: "users.create") { _ in ... } // POST /api/v1/users
+    v1.get("/users/{id}", name: "users.show") { _ in ... } // GET /api/v1/users/{id}
+    v1.put("/users/{id}", name: "users.update") { _ in ... } // PUT /api/v1/users/{id}
     v1.delete("/users/{id}", name: "users.delete") { _ in ... } // DELETE /api/v1/users/{id}
 }
 ```
 
 The name prefix is composed automatically, so `name: "users.index"` inside a `"api.v1."` group becomes the full route name `"api.v1.users.index"`.
 
-### Value-returning groups
+### Group middleware
 
-`grouped(_:name:)` returns an optional group object for use outside a closure:
+Groups also accept a `middleware` parameter. The group-level middleware is prepended to any route-level middleware defined inside the group:
 
 ```swift
-guard let v2 = app.grouped("/api/v2", name: "api.v2.") else { return }
+app.group("/admin", middleware: [AuthMiddleware()]) { admin in
+    admin.get("/dashboard") { _ in ... } // AuthMiddleware runs first
+    admin.get("/users", middleware: [LoggingMiddleware()]) { _ in ... } // AuthMiddleware, then LoggingMiddleware
+}
+```
+
+### Value-returning groups
+
+`grouped(_:name:)` returns a group object for use outside a closure:
+
+```swift
+let v2 = app.grouped("/api/v2", name: "api.v2.")
 v2.get("/posts") { _ in ... }  // GET /api/v2/posts
 ```
 
@@ -310,8 +340,17 @@ The `Request` object is passed to every middleware and route handler, exposing h
 
 ```swift
 app.get("greet/{name}") { request in
-    let name = request.parameters.get("name") ?? "stranger"
+    let name = request.route[parameter: "name"] as String? ?? "stranger"
     return "Hello, \(name)!"
+}
+```
+
+Typed parameter extraction is done via `request.route[parameter:]`, which returns `String?`, `Int?`, `UUID?`, or `Date?` depending on the captured value:
+
+```swift
+app.get("users/{id<\\d+>}") { request in
+    let id = request.route[parameter: "id"] as Int?
+    return "User \(id ?? 0)"
 }
 ```
 
@@ -338,9 +377,9 @@ app.get("hello") { request in
 Return any `Encodable` value from a route handler and the framework serialises it and wraps it in a `200 OK` response:
 
 ```swift
-app.get { _ in "Hello" }           // 200 OK, body: "Hello"
-app.get("count") { _ in 1 }        // 200 OK, body: 1
-app.get("user") { _ in             // 200 OK, body: JSON-encoded User
+app.get { _ in "Hello" } // 200 OK, body: "Hello"
+app.get("count") { _ in 1 } // 200 OK, body: 1
+app.get("user") { _ in // 200 OK, body: JSON-encoded User
     User(id: 1, name: "Alice")
 }
 ```

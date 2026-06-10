@@ -22,6 +22,5 @@ let package = Package(
         .testTarget(name: "ChaqmoqTests", dependencies: [
             .target(name: "Chaqmoq")
         ])
-    ],
-    swiftLanguageModes: [.v5]
+    ]
 )

@@ -5,7 +5,7 @@ import Foundation
 /// Use the built-in presets — `.production`, `.development`, `.testing` — or create a custom
 /// environment by providing a name. The active environment can also be set via the `CHAQMOQ_ENV`
 /// process variable.
-public struct Environment {
+public struct Environment: Sendable {
     /// The name of the environment (e.g. `"development"`, `"production"`).
     public let name: String
 

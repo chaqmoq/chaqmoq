@@ -64,6 +64,43 @@ final class ChaqmoqTests: XCTestCase {
         XCTAssertTrue(type(of: lastMiddleware) == RoutingMiddleware.self)
     }
 
+    func testFreezeRoutesPreservesPipelineAndStillRoutes() async throws {
+        // Arrange
+        let app = Chaqmoq()
+        let expected = Response(status: .accepted)
+        app.get("/posts") { _ in expected }
+        app.middleware = [CustomMiddleware()] // user middleware ahead of routing
+
+        // Act
+        app.freezeRoutes()
+
+        // Assert — pipeline order preserved: custom middleware first, RoutingMiddleware last.
+        XCTAssertEqual(app.middleware.count, 2)
+        XCTAssertTrue(type(of: app.middleware[0]) == CustomMiddleware.self)
+        let routing = try XCTUnwrap(app.middleware.last as? RoutingMiddleware)
+
+        // The frozen snapshot still resolves the registered route.
+        let request = Request(eventLoop: EmbeddedEventLoop(), uri: URI("/posts")!)
+        let result = try await routing.handle(request: request) { _ in fatalError() }
+        let response = try XCTUnwrap(result as? Response)
+        XCTAssertEqual(response.status, .accepted)
+    }
+
+    func testFreezeRoutesDoesNotDuplicateRoutingMiddleware() throws {
+        // Arrange
+        let app = Chaqmoq()
+        app.get("/a") { _ in Response() }
+
+        // Act — freezing twice must not accumulate RoutingMiddleware instances.
+        app.freezeRoutes()
+        app.freezeRoutes()
+
+        // Assert
+        XCTAssertEqual(app.middleware.count, 1)
+        let lastMiddleware = try XCTUnwrap(app.middleware.last)
+        XCTAssertTrue(type(of: lastMiddleware) == RoutingMiddleware.self)
+    }
+
     func testRunShutdown() throws {
         let app = Chaqmoq()
         let semaphore = DispatchSemaphore(value: 0)

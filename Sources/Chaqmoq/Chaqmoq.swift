@@ -48,9 +48,30 @@ public final class Chaqmoq: TrieRouter {
 extension Chaqmoq {
     /// Starts the server and begins accepting incoming requests. Blocks until the server stops.
     ///
+    /// Immediately before binding, the route trie is frozen (see ``freezeRoutes()``) so
+    /// that request routing runs lock-free across every event-loop thread.
+    ///
+    /// - Important: Register all routes before calling `run()`. Routes added afterwards
+    ///   are not served and registering concurrently with live traffic is unsafe.
     /// - Throws: An error if the server fails to start.
     public func run() throws {
+        freezeRoutes()
         try server.start()
+    }
+
+    /// Replaces the request-routing middleware with one backed by a lock-free
+    /// ``FrozenTrieRouter`` snapshot of the current routes.
+    ///
+    /// `TrieRouter.resolve` serialises every lookup on an internal lock, so under load
+    /// all event-loop threads contend on a single mutex. Freezing produces an immutable
+    /// router that resolves with zero synchronisation. Called automatically by ``run()``.
+    ///
+    /// The user middleware order is preserved; only the trailing ``RoutingMiddleware``
+    /// is rebound from `self` (locked) to the frozen snapshot.
+    public func freezeRoutes() {
+        let frozen = build()
+        let userMiddleware = server.middleware.filter { !($0 is RoutingMiddleware) }
+        server.middleware = userMiddleware + [RoutingMiddleware(router: frozen)]
     }
 
     /// Stops the server and releases its resources.

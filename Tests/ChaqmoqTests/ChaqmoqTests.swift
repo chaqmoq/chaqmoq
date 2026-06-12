@@ -169,7 +169,7 @@ extension ChaqmoqTests {
     struct CustomErrorMiddleware: ErrorMiddleware {}
 
     struct CustomMiddleware: Middleware {
-        func handle(request: Request, responder: @escaping Responder) async throws -> Encodable {
+        func handle(request: Request, responder: @escaping Responder) async throws -> any Encodable & Sendable {
             try await responder(request)
         }
     }

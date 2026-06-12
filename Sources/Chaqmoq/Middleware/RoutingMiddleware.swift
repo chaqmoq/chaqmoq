@@ -8,7 +8,7 @@ struct RoutingMiddleware: Middleware {
     func handle(
         request: Request,
         responder: @escaping Responder
-    ) async throws -> Encodable {
+    ) async throws -> any Encodable & Sendable {
         if let route = router.resolve(request: request) {
             return try await handle(
                 request: request,
@@ -23,7 +23,7 @@ struct RoutingMiddleware: Middleware {
         request: Request,
         route: Route,
         next index: Int = 0
-    ) async throws -> Encodable {
+    ) async throws -> any Encodable & Sendable {
         if index > route.middleware.count - 1 {
             var request = request
             request.setAttribute(

@@ -1,5 +1,5 @@
 /// The entry point for a Chaqmoq application. Manages routing, middleware, and server lifecycle.
-public final class Chaqmoq: TrieRouter {
+public final class Chaqmoq: TrieRouter, @unchecked Sendable {
     /// The application's configuration.
     public let configuration: Configuration
 

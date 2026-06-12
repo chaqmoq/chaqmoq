@@ -74,10 +74,10 @@ final class RoutingMiddlewareTests: XCTestCase {
 }
 
 extension RoutingMiddlewareTests {
-    final class TrackingMiddleware: Middleware {
+    final class TrackingMiddleware: Middleware, @unchecked Sendable {
         var wasCalled = false
 
-        func handle(request: Request, responder: @escaping Responder) async throws -> Encodable {
+        func handle(request: Request, responder: @escaping Responder) async throws -> any Encodable & Sendable {
             wasCalled = true
             return try await responder(request)
         }

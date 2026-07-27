@@ -22,6 +22,39 @@ public final class Chaqmoq: TrieRouter, @unchecked Sendable {
         set { server.errorMiddleware = newValue }
     }
 
+    /// Called when an HTTP/1.1 connection is upgraded to WebSocket.
+    ///
+    /// Setting this to a non-`nil` value enables WebSocket upgrade support. Upgrade requests are
+    /// intercepted by NIO's upgrade handler before they reach the routing middleware, so a WebSocket
+    /// endpoint does not need — and will not match — a registered route.
+    ///
+    /// - Important: Set this before calling ``run()``.
+    ///
+    /// ```swift
+    /// app.onUpgrade = { request, webSocket in
+    ///     for await message in webSocket.messages {
+    ///         if case .text(let text) = message { try await webSocket.send("echo: \(text)") }
+    ///     }
+    /// }
+    /// ```
+    public var onUpgrade: (@Sendable (Request, WebSocket) async throws -> Void)? {
+        get { server.onUpgrade }
+        set { server.onUpgrade = newValue }
+    }
+
+    /// Decides whether an HTTP/1.1 → WebSocket upgrade request is accepted.
+    ///
+    /// Returning `false` refuses the upgrade and lets the request continue through the normal HTTP
+    /// pipeline. When `nil`, every upgrade request is accepted — validate the `Origin` header here to
+    /// guard against cross-site WebSocket hijacking, since browsers attach cookies to the handshake
+    /// but do not enforce CORS on it.
+    ///
+    /// - Important: This closure runs on the channel's event loop. Keep it fast and non-blocking.
+    public var shouldUpgrade: ((Request) -> Bool)? {
+        get { server.shouldUpgrade }
+        set { server.shouldUpgrade = newValue }
+    }
+
     let server: Server
 
     /// Creates a new Chaqmoq application.

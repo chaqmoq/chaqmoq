@@ -7,21 +7,27 @@ on:
   workflow_dispatch:
 jobs:
   macos:
-    runs-on: macos-14
+    # Package.swift requires swift-tools-version 6.2, which ships with Xcode 26 (macOS 26 image).
+    runs-on: macos-26
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      - name: Swift version
+        run: swift --version
       - name: Build
         run: swift build -v
       - name: Run tests
         run: swift test --enable-code-coverage --sanitize=thread
   ubuntu:
     runs-on: ubuntu-latest
-    container: swift:5.10-jammy
+    container: swift:6.2-noble
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      - name: Swift version
+        run: swift --version
       - name: Build
         run: swift build -v
       - name: Run tests
-        run: swift test --enable-code-coverage --enable-test-discovery --sanitize=thread
+        # Test discovery is automatic since Swift 5.5; --enable-test-discovery is gone.
+        run: swift test --enable-code-coverage --sanitize=thread
